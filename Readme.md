@@ -129,7 +129,7 @@ cd entity-normalization-engine
 ```
 3.. create new conda env and install conda packages:
 ```bash
-conda create --name vectorai
+conda create --name vectorai python=3.8
 ```
 4.. activate the newly created virtual environment:
 ```bash
