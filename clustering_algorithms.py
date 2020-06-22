@@ -10,7 +10,7 @@ class Algorithms:
     def __init__(self, print_output=False, save_output=False):
         """
         Clustering algorithm constructor
-        :param print_output: prints clusters in the console
+        :param print_output: prints clusters to the console
         :param save_output: save the clusters in a json file
         """
         self.print_output = print_output
