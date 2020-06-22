@@ -134,14 +134,23 @@ class Algorithms:
                 with open(f"results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}.json", "w") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
-    def agglomerative(self, entity_group: set,  metric: str, linkage: str, json_path=None):
+    def agglomerative(self, entity_group: set,  metric: str, linkage: str, distance_threshold=None, json_path=None):
         """
+        Work in progress...
         In agglomerative algorithms, each item starts in its own cluster and the two most similar items are then
         clustered. We continue accumulating the most similar items or clusters together two at a time until
         there is one cluster.
         :param entity_group:
         :param metric:
-        :param linkage:
+        :param linkage: {“ward”, “complete”, “average”, “single”}, default=”ward” .Which linkage criterion to use.
+        The linkage criterion determines which distance to use between sets of observation. The algorithm will merge
+        the pairs of cluster that minimize this criterion.
+                * ward minimizes the variance of the clusters being merged.
+                * average uses the average of the distances of each observation of the two sets.
+                * complete or maximum linkage uses the maximum distances between all observations of the two sets.
+                * single uses the minimum of the distances between all observations of the two sets.
+        :param distance_threshold: float, default=None. The linkage distance threshold above which, clusters will not
+        be merged. If not None, n_clusters must be None and compute_full_tree must be True.
         :param json_path: where to save the results, default is in the folder "results" accessible from the root.
         :return: nothing for the time being.
         """
