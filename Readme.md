@@ -137,7 +137,7 @@ conda activate vectorai
 ```
 5.. install pip packages
 ```bash
-pip install -r pip_requirements.txt     
+pip install -r requirements.txt     
 ```
 6.. try main.py
 ```bash
