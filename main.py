@@ -36,7 +36,7 @@ to_be_clustered = open("strings.txt", 'r')
 for string in to_be_clustered:
     entity_recognition(string.replace('\n', ''))
 
-selection = Algorithms(print_output=True)
+selection = Algorithms(print_output=True, save_output=True)
 
 # the idea here is to apply different clustering algorithms to different types of entities
 if len(company_names) >= 2:
