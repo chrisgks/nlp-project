@@ -113,3 +113,38 @@ As a first step, I will attempt to built a Team B system, leveraging a NER pre-t
 * [OpenAddresses - U.S. Midwest](https://www.kaggle.com/openaddresses/openaddresses-us-midwest)
 * [Melbourne Housing Market (contains addresses)](https://www.kaggle.com/anthonypino/melbourne-housing-market)
 * [Indian hotels on Booking.com (contains addresses)](https://www.kaggle.com/PromptCloudHQ/indian-hotels-on-bookingcom)
+
+
+# Usage (tested on Ubuntu 18.04.4 LTS)
+0.. make sure you have [miniconda](https://docs.conda.io/en/latest/miniconda.html), 
+[anaconda](https://docs.anaconda.com/anaconda/install/linux/) or any other python virtual environment installed.      
+
+1.. open a terminal and download the project:
+```bash
+git clone https://github.com/chrisgks/entity-normalization-engine.git
+```
+2.. cd to project directory:
+```bash
+cd entity-normalization-engine   
+```
+3.. create new conda env and install conda packages:
+```bash
+conda create --name vectorai
+```
+4.. activate the newly created virtual environment:
+```bash
+conda activate vectorai  
+```
+5.. install pip packages
+```bash
+pip install -r pip_requirements.txt     
+```
+6.. try main.py
+```bash
+python main.py     
+```
+7.. try hyper_parameter_exploration.py
+```bash
+python hyper_parameter_exploration.py
+```
+8.. check results folder
