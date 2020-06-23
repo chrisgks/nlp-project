@@ -169,8 +169,8 @@ class Algorithms:
         clustered. We continue accumulating the most similar items or clusters together two at a time until
         there is one cluster.
 
-        :param entity_group:
-        :param metric:
+        :param entity_group: name of the entity group (company name, location, unknown soup).
+        :param metric: jaro or levenshtein.
         :param linkage: {“ward”, “complete”, “average”, “single”}, default=”ward” .Which linkage criterion to use.
         The linkage criterion determines which distance to use between sets of observation. The algorithm will merge
         the pairs of cluster that minimize this criterion.
