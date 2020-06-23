@@ -1,5 +1,6 @@
-# Problem Description
-## Part 1
+# Entity Normalization Engine
+
+### Part 1
 - We want to build an entity normalization engine. The input to this
 engine is short strings / phrases that could encompass the following
 entities: company names, company addresses, serial numbers,
@@ -16,7 +17,7 @@ trained model / some other form of knowledge and guidance.
 - Examples:
   - “Marks and Spencers Ltd” and “M&S Limited” are the same entity, but they differ from “NVIDIA Ireland”
   - “LONDON” and “LONDON, ENG” are the same but they differ from “ASIA”
-## Part 2
+### Part 2
 Let’s do something real world now! Your system will receive strings
 one by one and you have to group together any entities that you have
 come across earlier.    
@@ -42,7 +43,7 @@ It seems to me like there are two main directions to approaching this problem:
 
 To put it in a nutshell, a big differentive factor of these two families of approaches, is the step of classification of a given string - whether it is a company name, company address, serial number, physical good or location. This is a whole system just by itself. I feel that if we could built such a system, pass each string through it, create the initial groups, and then apply clustering algorithms to each group seperately will give us better accuracy - this is just an intuition though.
 
-### Potential Approaches
+## Potential Approaches
 - Team A approaches - naive:
    * Naively treat all strings the same way, withought taking into consideration their entity or other information. Pick a clustering algorithm, a dinstance/similarity metric and create the clusters (experiment with various algorithms/metics combinations). 
    
@@ -53,7 +54,7 @@ To put it in a nutshell, a big differentive factor of these two families of appr
    
 ![ner_clust.png](workflows/ner_clust.png)
 
-   2. Feed samples that have been classified as named entities from preveous step through a Named Entity Linking(NEL)/Disambiguation(NED)/Normalization(NEN) model ([there exist systems that can do both NER and Liniking](https://nlpprogress.com/english/entity_linking.html). This, at first glance, seem like a way to group together entities such: “Marks and Spencers Ltd”, “M&S Limited”. But, unfortunately, as far as I'm concerned, this requaries a Knowledge Base. Various models are trained on (have learned word embeddings) different KBs (eg. wikipedia, CoNLL). What happens if, for example, "M&S Limited" and similar strings does  not exist in that Knowlidge Base? This is an issue. However If this could work in real life, what we would expect to achieve is that company names and locations need not pass through a clustering procces. Hence, we are eliminating clustering inaccuracies a bit more.
+   2. Feed samples that have been classified as named entities from preveous step through a Named Entity Linking(NEL)/Disambiguation(NED)/Normalization(NEN) model ([there exist systems that can do both NER and Liniking])(https://nlpprogress.com/english/entity_linking.html). This, at first glance, seem like a way to group together entities such: “Marks and Spencers Ltd”, “M&S Limited”. But, unfortunately, as far as I'm concerned, this requaries a Knowledge Base. Various models are trained on (have learned word embeddings) different KBs (eg. wikipedia, CoNLL). What happens if, for example, "M&S Limited" and similar strings does  not exist in that Knowlidge Base? This is an issue. However If this could work in real life, what we would expect to achieve is that company names and locations need not pass through a clustering procces. Hence, we are eliminating clustering inaccuracies a bit more.
    
 ![ner_linking_clust.png](workflows/ner_linking_clust.png)
 
@@ -66,19 +67,18 @@ As a first step, I will attempt to built a Team B system, leveraging a NER pre-t
 
 ### Clustering algorithms that don't require #clusters apriori
   - Affinity propagation(graph based, the end result is a set of cluster ‘exemplars’)
-  - Hierarchical clustering
   - Agglomerative Clustering (complete linkage)
   - DBSCAN
-  - try all of the above with their default cluster metric, try them with levenshtein distance where possible
-  - a general issue is the vectorization step. Scikit-learn estimators assume you’ll feed them real-valued feature vectors. This assumption is hard-coded in pretty much all of the library. Custom metrics for strings are hard to incorporate into these algorithm (at leas for now, given my current understanding)
+  - try all of the above with their default cluster metric, try them with edit/jaro distance where possible
+  - a general issue is the vectorization step (in case we want to try other algorithms without edit/jaro metric). Scikit-learn estimators assume you’ll feed them real-valued feature vectors. This assumption is hard-coded in pretty much all of the library. Custom metrics for strings are hard to incorporate into these algorithm (at least for now, given my current understanding)
 
 ### Notes/constraints
 * Graph clustering algorithms could be a good choice since we are dealing with sting distance/similarity matrices - similar to graph distance/similarity matrices
   * potential graph clustering algo candidates:
-    * Markov Clustering
-    * Restricted Neighbourhood Search Clustering 
-    * Louvain Clustering
-    * Affinity Propagation Clustering
+    * [Markov Clustering](https://micans.org/mcl/)
+    * [Restricted Neighbourhood Search Clustering](https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/mcl.pdf)
+    * [Louvain Clustering](https://en.wikipedia.org/wiki/Louvain_modularity)
+    * [Affinity Propagation Clustering](https://en.wikipedia.org/wiki/Affinity_propagation)
 * company adresses are unique     
 * serial numbers are unique
 * flair can deal with: organazations, locations, everything else is an _"unknown_soup"_, need to filter the org and loc
@@ -87,9 +87,9 @@ As a first step, I will attempt to built a Team B system, leveraging a NER pre-t
 * for company names: ner + some sort of vectorization (word emb) or string similarity metric
 * for goods: since they are real objects, word2vec on wikipedia could work
 * for locations: ner + word2vec on wikipedia might work as well
-* for serial numbers: some sort of defaul "nothing" since these are hypotheticaly unique
+* for serial numbers: some sort of defaul "nothing" since these are hypotheticaly unique, if we can identify that a string is a serial number, then we don't need clustering - since they are unique
 * for addresses: same as ser. nums
-* clustering algos that can use string similarity metrics
+* search for clustering algos that can use string similarity metrics
 * classic vectorization might not work (bag of words, tfidf) since they need more text/context (text documents)
 * would be nice to built a separate system for each of the five categories - but how can we tell what techniques to apply to each category since we don't have this info beforehand? - The input is one string at a time - could be anything.
 * __jaro-winkler__: The Jaro–Winkler distance uses a prefix scale p which gives more favourable ratings to strings that match from the beginning for a set prefix length l.
