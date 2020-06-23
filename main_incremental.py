@@ -48,21 +48,21 @@ for idx, string in enumerate(to_be_clustered):
                                                         metric="jaro",
                                                         epsilon=10,
                                                         min_samples=1,
-                                                        json_path="iterative_results",
+                                                        json_path="incremental_results",
                                                         set_name="company_names")
     elif flag == 2 and len(locations) >= 2:
         final_locations_clusters = selection.dbscan(entity_group=locations,
                                                     metric="jaro",
                                                     epsilon=5,
                                                     min_samples=1,
-                                                    json_path="iterative_results",
+                                                    json_path="incremental_results",
                                                     set_name="locations")
     elif flag == 3 and len(unknown_soup):
         final_unknown_soup_clusters = selection.dbscan(entity_group=unknown_soup,
                                                        metric="levenshtein",
                                                        epsilon=10,
                                                        min_samples=1,
-                                                       json_path="iterative_results",
+                                                       json_path="incremental_results",
                                                        set_name="unknown_soup")
 
 # need to catch errors in case clusters are empty
