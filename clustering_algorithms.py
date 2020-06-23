@@ -16,7 +16,12 @@ class Algorithms:
         self.print_output = print_output
         self.save_output = save_output
 
-    def affinity_propagation(self, entity_group: set, metric: str, damping: float, preference: int, json_path=None):
+    def affinity_propagation(self, entity_group: set,
+                             metric: str,
+                             damping: float,
+                             preference: int,
+                             json_path=None,
+                             set_name=''):
         """
         In contrast to other traditional clustering methods, affprop does not require you to specify the number of
         clusters. In creators' terms, in affprop, each data point sends messages to all other points informing its
@@ -34,6 +39,7 @@ class Algorithms:
         to avoid numerical oscillations when updating these messages.
         :param preference: controls how many exemplars are used.
         :param json_path: where to save the results, default is in the folder "results" accessible from the root.
+        :param set_name: the name of the set - helps with json naming (optional)
         :return: nothing for the time being.
         """
 
@@ -77,13 +83,17 @@ class Algorithms:
 
         if self.save_output:
             if json_path is not None:
-                with open(json_path, "w") as out:
+                with open(f"{json_path}/affinity_{str_metric}_{str(damping)}_{str(preference)}_{set_name}.json", "w+")\
+                        as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/affinity_{str_metric}_{str(damping)}_{str(preference)}.json", "w") as out:
+                with open(f"results/affinity_{str_metric}_{str(damping)}_{str(preference)}_{set_name}.json", "w+")\
+                        as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
-    def dbscan(self, entity_group: set, metric: str, epsilon: float, min_samples: int, json_path=None):
+        return clusters
+
+    def dbscan(self, entity_group: set, metric: str, epsilon: float, min_samples: int, json_path=None, set_name=''):
         """
         Density-based clustering works by identifying “dense” clusters of points, allowing it to learn clusters of
         arbitrary shape and identify outliers in the data. The general idea behind ɛ-neighborhoods is given a data
@@ -98,7 +108,8 @@ class Algorithms:
         :param min_samples: The minimum number of data points that have to be withing that neighborhood for a point
         to be considered a core point (of that given cluster ) - cluster density level threshold.
         :param json_path: where to save the results, default is in the folder "results" accessible from the root.
-        :return: nothing for the time being.
+        :param set_name: the name of the set - helps with json naming (optional)
+        :return: clusters
         """
 
         # keep metric in string form for the json name before it's being assinged the actual ram address of the function
@@ -134,11 +145,15 @@ class Algorithms:
                 print(key, item)
         if self.save_output:
             if json_path is not None:
-                with open(json_path, "w") as out:
+                with open(f"{json_path}/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}_{set_name}.json", "w+")\
+                        as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}.json", "w") as out:
+                with open(f"results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}_{set_name}.json", "w+")\
+                        as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
+
+        return clusters
 
     def agglomerative(self, entity_group: set,
                       metric: str,
@@ -146,7 +161,8 @@ class Algorithms:
                       distance_threshold: float,
                       compute_full_tree=True,
                       n_clusters=None,
-                      json_path=None):
+                      json_path=None,
+                      set_name=''):
         """
         Work in progress...
         In agglomerative algorithms, each item starts in its own cluster and the two most similar items are then
@@ -169,7 +185,8 @@ class Algorithms:
         :param compute_full_tree: ‘auto’ or bool, default=’auto'. It must be True if distance_threshold is not None.
         By default compute_full_tree is “auto”, which is equivalent to True when distance_threshold is not None or that
          n_clusters is inferior to the maximum between 100 or 0.02 * n_samples. Otherwise, “auto” is equivalent to False
-        :return: nothing for the time being.
+        :param set_name: the name of the set - helps with json naming (optional)
+        :return: clusters
         """
 
         # keep metric in string form for the json name before it's being assinged the actual ram address of the function
@@ -207,9 +224,12 @@ class Algorithms:
                 print(key, item)
         if self.save_output:
             if json_path is not None:
-                with open(json_path, "w") as out:
+                with open(f"{json_path}/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}"
+                          f".json", "w+") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}.json", "w")\
-                        as out:
+                with open(f"results/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}"
+                          f".json", "w+") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
+
+        return clusters
