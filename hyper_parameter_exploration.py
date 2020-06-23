@@ -14,9 +14,6 @@ for string in to_be_clustered:
 
 to_be_clustered.close()
 
-data_set = set(data)
-
-
 selection = Algorithms(print_output=True, save_output=True)
 
 
