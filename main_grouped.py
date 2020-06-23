@@ -40,7 +40,7 @@ selection = Algorithms(print_output=True, save_output=True)
 
 # the idea here is to apply different clustering algorithms to different types of entities
 if len(company_names) >= 2:
-    selection.dbscan(entity_group=company_names, metric="jaro", epsilon=.3, min_samples=1)
+    selection.dbscan(entity_group=company_names, metric="jaro", epsilon=.5, min_samples=1)
 if len(locations) >= 2:
     selection.affinity_propagation(entity_group=locations, metric="jaro", damping=.5, preference=5)
 if len(unknown_soup) >= 2:
