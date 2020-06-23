@@ -27,6 +27,7 @@ class Algorithms:
         received from all targets. The message-passing procedure proceeds until a consensus is reached. Once the sender
         is associated with one of its targets, that target becomes the point’s exemplar. All points with the same
         exemplar are placed in the same cluster.
+
         :param entity_group: company_names, locations, or  unknown_soup for everything else.
         :param metric: distance/similarity matrix - jaro or levenshtein.
         :param damping: damps the responsibility and availability messages
@@ -39,10 +40,14 @@ class Algorithms:
         # keep metric in string form for the json name before it's being assinged the actual ram address of the function
         str_metric = metric
 
+        # aff prop works with similarity matrix, so convert to similarity/distance matric depending on the metric
+        # jaro returns similarity matrix, levenshtein returns distance matrix
         if metric == "jaro":
-           metric = jaro
+            metric = jaro
+            multiplier = 1
         elif metric == "levenshtein":
             metric = levenshtein
+            multiplier = -1
         else:
             print("Available metrics: [jaro, levenshtein]")
             return
@@ -50,7 +55,7 @@ class Algorithms:
         words = np.asarray(list(entity_group))
 
         # affprop works with similarity matrix, mult by -1 to convert from distance to similarity
-        similarity_matrix = -1 * np.array([[metric(w1, w2) for w1 in words] for w2 in words])
+        similarity_matrix = multiplier * np.array([[metric(w1, w2) for w1 in words] for w2 in words])
 
         # precomputed because we are passing the similarity_matrix manually
         affprop = AffinityPropagation(affinity="precomputed",
@@ -78,7 +83,7 @@ class Algorithms:
                 with open(f"results/affinity_{str_metric}_{str(damping)}_{str(preference)}.json", "w") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
-    def dbscan(self, entity_group: set,  metric: str, epsilon: float, min_samples: int, json_path=None):
+    def dbscan(self, entity_group: set, metric: str, epsilon: float, min_samples: int, json_path=None):
         """
         Density-based clustering works by identifying “dense” clusters of points, allowing it to learn clusters of
         arbitrary shape and identify outliers in the data. The general idea behind ɛ-neighborhoods is given a data
@@ -86,6 +91,7 @@ class Algorithms:
         real-valued ɛ > 0 and some point p, the ɛ-neighborhood of p is defined as the set of points that are at most
         distance ɛ away from p. In 2D space, the ɛ-neighborhood of a point p is the set of points contained in a circle
          of radius ɛ, centered at p.
+
         :param entity_group: name of the entity group (company name, location, unknown soup).
         :param metric: jaro or levenshtein.
         :param epsilon: ɛ, The radius (size) of the neighborhood around a data point p.
@@ -134,12 +140,19 @@ class Algorithms:
                 with open(f"results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}.json", "w") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
-    def agglomerative(self, entity_group: set,  metric: str, linkage: str, distance_threshold=None, json_path=None):
+    def agglomerative(self, entity_group: set,
+                      metric: str,
+                      linkage: str,
+                      distance_threshold: float,
+                      compute_full_tree=True,
+                      n_clusters=None,
+                      json_path=None):
         """
         Work in progress...
         In agglomerative algorithms, each item starts in its own cluster and the two most similar items are then
         clustered. We continue accumulating the most similar items or clusters together two at a time until
         there is one cluster.
+
         :param entity_group:
         :param metric:
         :param linkage: {“ward”, “complete”, “average”, “single”}, default=”ward” .Which linkage criterion to use.
@@ -152,6 +165,10 @@ class Algorithms:
         :param distance_threshold: float, default=None. The linkage distance threshold above which, clusters will not
         be merged. If not None, n_clusters must be None and compute_full_tree must be True.
         :param json_path: where to save the results, default is in the folder "results" accessible from the root.
+        :param n_clusters: The number of clusters to find. It must be None if distance_threshold is not None.
+        :param compute_full_tree: ‘auto’ or bool, default=’auto'. It must be True if distance_threshold is not None.
+        By default compute_full_tree is “auto”, which is equivalent to True when distance_threshold is not None or that
+         n_clusters is inferior to the maximum between 100 or 0.02 * n_samples. Otherwise, “auto” is equivalent to False
         :return: nothing for the time being.
         """
 
@@ -171,7 +188,10 @@ class Algorithms:
         distance_matrix = np.array([[metric(w1, w2) for w1 in data] for w2 in data])
 
         agg = AgglomerativeClustering(affinity='precomputed',
-                                      linkage=linkage)
+                                      linkage=linkage,
+                                      distance_threshold=distance_threshold,
+                                      compute_full_tree=compute_full_tree,
+                                      n_clusters=n_clusters)
 
         agg.fit(distance_matrix)
 
@@ -190,5 +210,6 @@ class Algorithms:
                 with open(json_path, "w") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/agglomerative_{str_metric}_{str(linkage)}.json", "w") as out:
+                with open(f"results/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}.json", "w")\
+                        as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
