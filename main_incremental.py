@@ -37,7 +37,7 @@ def entity_recognition(input_string: str):
 
 to_be_clustered = open("strings.txt", 'r')
 
-selection = Algorithms(print_output=False, save_output=True, )
+selection = Algorithms(print_output=False, save_output=True)
 
 for idx, string in enumerate(to_be_clustered):
 
@@ -45,22 +45,22 @@ for idx, string in enumerate(to_be_clustered):
 
     if flag == 1 and len(company_names) >= 2:
         final_company_names_clusters = selection.dbscan(entity_group=company_names,
-                                                        metric="levenshtein",
-                                                        epsilon=.3,
+                                                        metric="jaro",
+                                                        epsilon=10,
                                                         min_samples=1,
                                                         json_path="iterative_results",
                                                         set_name="company_names")
     elif flag == 2 and len(locations) >= 2:
         final_locations_clusters = selection.dbscan(entity_group=locations,
-                                                    metric="levenshtein",
-                                                    epsilon=.3,
+                                                    metric="jaro",
+                                                    epsilon=5,
                                                     min_samples=1,
                                                     json_path="iterative_results",
                                                     set_name="locations")
     elif flag == 3 and len(unknown_soup):
         final_unknown_soup_clusters = selection.dbscan(entity_group=unknown_soup,
                                                        metric="levenshtein",
-                                                       epsilon=.3,
+                                                       epsilon=10,
                                                        min_samples=1,
                                                        json_path="iterative_results",
                                                        set_name="unknown_soup")
