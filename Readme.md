@@ -137,15 +137,23 @@ conda activate vectorai
 ```bash
 pip install -r requirements.txt     
 ```
-6.. try main.py:
+6.. try main_grouped.py to cluster already grouped results from NER at once
 ```bash
-python main.py     
+python main_grouped.py     
 ```
-7.. try hyper_parameter_exploration.py:
+7.. try main_incremental.py to cluster one sample at a time
+```bash
+python main_incremental.py
+```
+8.. try hyper_parameter_exploration.py to explore various algorithm-parameter combinations
 ```bash
 python hyper_parameter_exploration.py
 ```
-8.. check results folder:
+9.. check results folder to see performance of main_grouped.py and hyper_parameter_exploration.py
 ```bash
 cd results
+```
+10.. check incremental_results to see performance of main_incremental.py
+```bash
+cd incremental_results
 ```
