@@ -125,7 +125,7 @@ git clone https://github.com/chrisgks/entity-normalization-engine.git
 ```bash
 cd entity-normalization-engine   
 ```
-3.. create new conda env and install conda packages:
+3.. create new conda env:
 ```bash
 conda create --name vectorai python=3.8
 ```
@@ -133,16 +133,19 @@ conda create --name vectorai python=3.8
 ```bash
 conda activate vectorai  
 ```
-5.. install pip packages
+5.. install pip packages:
 ```bash
 pip install -r requirements.txt     
 ```
-6.. try main.py
+6.. try main.py:
 ```bash
 python main.py     
 ```
-7.. try hyper_parameter_exploration.py
+7.. try hyper_parameter_exploration.py:
 ```bash
 python hyper_parameter_exploration.py
 ```
-8.. check results folder
+8.. check results folder:
+```bash
+cd results
+```
