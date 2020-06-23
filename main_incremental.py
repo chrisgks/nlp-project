@@ -57,7 +57,7 @@ for idx, string in enumerate(to_be_clustered):
                                                     min_samples=1,
                                                     json_path="incremental_results",
                                                     set_name="locations")
-    elif flag == 3 and len(unknown_soup):
+    elif flag == 3 and len(unknown_soup) >= 2:
         final_unknown_soup_clusters = selection.dbscan(entity_group=unknown_soup,
                                                        metric="levenshtein",
                                                        epsilon=10,
