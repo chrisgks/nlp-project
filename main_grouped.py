@@ -44,6 +44,6 @@ if len(company_names) >= 2:
 if len(locations) >= 2:
     selection.affinity_propagation(entity_group=locations, metric="jaro", damping=.5, preference=5)
 if len(unknown_soup) >= 2:
-    selection.agglomerative(entity_group=unknown_soup, metric="levenshtein", linkage="complete")
+    selection.agglomerative(entity_group=unknown_soup, metric="levenshtein", distance_threshold=.4, linkage="complete")
 
 to_be_clustered.close()

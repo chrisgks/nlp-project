@@ -33,10 +33,7 @@ print("Agglomerative - levenshtein - average")
 selection.agglomerative(entity_group=data, metric="levenshtein", linkage="average")
 print('#'*50)
 
-
-#######################################################################################################################
-
-
+# #######################################################################################################################
 print("Affinity Propagation - jaro - damping=.5 - preference=5")
 selection.affinity_propagation(entity_group=data, metric="jaro", damping=.5, preference=5)
 print('#'*50)
@@ -49,10 +46,7 @@ print("Affinity Propagation - jaro - damping=.8 - preference=0")
 selection.affinity_propagation(entity_group=data, metric="jaro", damping=.8, preference=0)
 print('#'*50)
 
-
-#######################################################################################################################
-
-
+# #######################################################################################################################
 print("DBSCAN - jaro - epsilon=.3 - min_samples=1")
 selection.dbscan(entity_group=data, metric="jaro", epsilon=.3, min_samples=1)
 print('#'*50)
@@ -67,4 +61,8 @@ print('#'*50)
 
 print("DBSCAN - levenshtein - epsilon=3 - min_samples=1")
 selection.dbscan(entity_group=data, metric="levenshtein", epsilon=.3, min_samples=1)
+print('#'*50)
+
+print("Agglomerative - levenshtein - average")
+selection.agglomerative(entity_group=data, metric="levenshtein", distance_threshold=.4, linkage="single")
 print('#'*50)
