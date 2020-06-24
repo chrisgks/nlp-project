@@ -40,7 +40,7 @@ class Algorithms:
         :param preference: controls how many exemplars are used.
         :param json_path: where to save the results, default is in the folder "results" accessible from the root.
         :param set_name: the name of the set - helps with json naming (optional)
-        :return: nothing for the time being.
+        :return: clusters
         """
 
         # keep metric in string form for the json name before it's being assinged the actual ram address of the function
