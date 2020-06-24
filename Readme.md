@@ -85,8 +85,8 @@ As a first step, I will attempt to built a Team B system, leveraging a NER pre-t
 * samples appear incrementaly - no access to the full stream -> update cluster params per data point observation
 * DBSCAN is good at identifying outliers - might be a good idea to use it on locations and company names in an attempt to detect misclassifications of flair's named entity recognition model. [a very cool viz of the algorithm](https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/) (choose pimpled smiley :P)
 * for company names: ner + some sort of vectorization (word emb) or string similarity metric
-* for goods: since they are real objects, word2vec on wikipedia could work
-* for locations: ner + word2vec on wikipedia might work as well
+* for goods: since they are real objects, BERT on wikipedia could work
+* for locations: ner + BERT on wikipedia might work as well
 * for serial numbers: some sort of defaul "nothing" since these are hypotheticaly unique, if we can identify that a string is a serial number, then we don't need clustering - since they are unique
 * for addresses: same as ser. nums
 * search for clustering algos that can use string similarity metrics
@@ -95,7 +95,7 @@ As a first step, I will attempt to built a Team B system, leveraging a NER pre-t
 * __jaro-winkler__: The Jaro–Winkler distance uses a prefix scale p which gives more favourable ratings to strings that match from the beginning for a set prefix length l.
 The lower the Jaro–Winkler distance for two strings is, the more similar the strings are. The score is normalized such that 0 means an exact match and 1 means there is no similarity. The Jaro–Winkler similarity is the inversion, (1 − Jaro–Winkler distance).
 So, this might work well for company_names (i.e. M&S Limited, M&S Corporation - the first 3 letters are identical) 
-* BERT is trained on Wikipedia - use it to generate word embeddings for physical goods and locations
+* Transformer powered BERT is trained on Wikipedia - use it to generate word embeddings for physical goods and locations + transfer learning with dataset of the other groups
 
 
 #### Datasets that could be used to (further) train models/learn word embeddings/create Knowledge Bases or create custom NERs in order to recognize company names and addresses more accurately
