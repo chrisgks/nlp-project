@@ -112,6 +112,17 @@ So, this might work well for company_names (i.e. M&S Limited, M&S Corporation - 
 * [Melbourne Housing Market (contains addresses)](https://www.kaggle.com/anthonypino/melbourne-housing-market)
 * [Indian hotels on Booking.com (contains addresses)](https://www.kaggle.com/PromptCloudHQ/indian-hotels-on-bookingcom)
 
+## About [Flair](https://github.com/flairNLP/flair)
+
+Why Flair:
+  * 1. It comprises of popular and state-of-the-art word embeddings, such as GloVe, BERT, ELMo, Character Embeddings, etc. There are very easy to use thanks to the Flair API
+  * 2. Flair’s interface allows us to combine different word embeddings and use them to embed documents. This in turn leads to a significant uptick in results
+‘Flair Embedding’ is the signature embedding provided within the Flair library. It is powered by contextual string embeddings.
+
+
+
+
+
 
 # Usage (tested on Ubuntu 18.04.4 LTS)
 0.. make sure you have [miniconda](https://docs.conda.io/en/latest/miniconda.html), 
