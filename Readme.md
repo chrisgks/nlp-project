@@ -58,7 +58,7 @@ To put it in a nutshell, a big differentive factor of these two families of appr
    
 ![ner_linking_clust.png](workflows/ner_linking_clust.png)
 
-   3. See if we can find appropriate sources, scrap the web, and create datasets of addresses, serial numbers, and physical goods. Create a corpus, train a model (learn word embeddings with word2vec maybe?) that can classify a string into one of these three classes. We could even attempt to build a custom NER model to include our new datasets. Here, based on the assumption that serial numbers and company addresses are _unique_, then that leaves us only the physical goods which need to be passed through a clustering process, but since these are real world physical items, word2vec on wikipedia/genism could also work.
+   3. See if we can find appropriate sources, scrap the web, and create datasets of addresses, serial numbers, and physical goods. Create a corpus, train a model (learn word embeddings with BERT maybe?) that can classify a string into one of these three classes. We could even attempt to build a custom NER model to include our new datasets. Here, based on the assumption that serial numbers and company addresses are _unique_, then that leaves us only the physical goods which need to be passed through a clustering process, but since these are real world physical items, BERT on wikipedia could also work.
 
 ### Approaches - Summary
 
