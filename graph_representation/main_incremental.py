@@ -35,7 +35,7 @@ def entity_recognition(input_string: str):
         return 3
 
 
-to_be_clustered = open("strings.txt", 'r')
+to_be_clustered = open("../strings.txt", 'r')
 
 selection = Algorithms(print_output=False, save_output=True)
 

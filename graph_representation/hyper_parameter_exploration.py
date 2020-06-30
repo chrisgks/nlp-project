@@ -6,7 +6,7 @@
 from clustering_algorithms import Algorithms
 
 
-to_be_clustered = open("strings.txt", 'r')
+to_be_clustered = open("../strings.txt", 'r')
 
 data = set()
 for string in to_be_clustered:

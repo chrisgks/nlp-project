@@ -31,7 +31,7 @@ def entity_recognition(input_string: str):
         unknown_soup.add(input_string)
 
 
-to_be_clustered = open("strings.txt", 'r')
+to_be_clustered = open("../strings.txt", 'r')
 
 for string in to_be_clustered:
     entity_recognition(string.replace('\n', ''))

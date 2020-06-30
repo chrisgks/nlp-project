@@ -38,7 +38,7 @@ class Algorithms:
         :param damping: damps the responsibility and availability messages
         to avoid numerical oscillations when updating these messages.
         :param preference: controls how many exemplars are used.
-        :param json_path: where to save the results, default is in the folder "results" accessible from the root.
+        :param json_path: where to save the non_incremental_results, default is in the folder "non_incremental_results" accessible from the root.
         :param set_name: the name of the set - helps with json naming (optional)
         :return: clusters
         """
@@ -87,7 +87,8 @@ class Algorithms:
                         as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/affinity_{str_metric}_{str(damping)}_{str(preference)}_{set_name}.json", "w+")\
+                with open(
+                        f"graph_representation/non_incremental_results/affinity_{str_metric}_{str(damping)}_{str(preference)}_{set_name}.json", "w+")\
                         as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
@@ -107,7 +108,7 @@ class Algorithms:
         :param epsilon: ɛ, The radius (size) of the neighborhood around a data point p.
         :param min_samples: The minimum number of data points that have to be withing that neighborhood for a point
         to be considered a core point (of that given cluster ) - cluster density level threshold.
-        :param json_path: where to save the results, default is in the folder "results" accessible from the root.
+        :param json_path: where to save the non_incremental_results, default is in the folder "non_incremental_results" accessible from the root.
         :param set_name: the name of the set - helps with json naming (optional)
         :return: clusters
         """
@@ -149,7 +150,8 @@ class Algorithms:
                         as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}_{set_name}.json", "w+")\
+                with open(
+                        f"graph_representation/non_incremental_results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}_{set_name}.json", "w+")\
                         as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
@@ -180,7 +182,7 @@ class Algorithms:
                 * single uses the minimum of the distances between all observations of the two sets.
         :param distance_threshold: float, default=None. The linkage distance threshold above which, clusters will not
         be merged. If not None, n_clusters must be None and compute_full_tree must be True.
-        :param json_path: where to save the results, default is in the folder "results" accessible from the root.
+        :param json_path: where to save the non_incremental_results, default is in the folder "non_incremental_results" accessible from the root.
         :param n_clusters: The number of clusters to find. It must be None if distance_threshold is not None.
         :param compute_full_tree: ‘auto’ or bool, default=’auto'. It must be True if distance_threshold is not None.
         By default compute_full_tree is “auto”, which is equivalent to True when distance_threshold is not None or that
@@ -228,8 +230,9 @@ class Algorithms:
                           f".json", "w+") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(f"results/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}"
-                          f".json", "w+") as out:
+                with open(
+                        f"graph_representation/non_incremental_results/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}"
+                        f".json", "w+") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
         return clusters
