@@ -35,7 +35,7 @@ previous one. You have to pick the latest sample received, scan the
 entries you already have, identify if the entity is a duplicate and then
 add it to a cluster / create a new cluster depending on your result.
 
-#General brainstrorming - notes - ideas - intuition
+# General brainstrorming - notes - ideas - intuition
 
 It seems to me like there are two main directions to approaching this problem:
 1. Raw text processing, withought taking into consideration entities, semantic information, morphology of strings, context, etc.. Create clusters right away. I could see this working to a certain extend, by projecting all of the strings' vector representations to a space and applying transformation after transormation with the hope that at some point, these transformations will capture the features that describe these groups. It certainly needs a lot of experimentation and could be very time consuming. We'll call this family of approaches __Team A__.
