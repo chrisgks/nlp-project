@@ -1,12 +1,10 @@
 import numpy as np
+import json
 from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN
 from jaro import jaro_winkler_metric as jaro
 from leven import levenshtein
-import json
-import sys
 from pathlib import Path
 # sys.path.insert(0, str(Path.cwd()).replace("utils", ""))
-from varname import nameof
 
 
 class Algorithms:
@@ -31,7 +29,8 @@ class Algorithms:
                              metric: str = None,
                              damping: float = None,
                              embeddings: list = None,
-                             entity_name: str = None):
+                             entity_name: str = None,
+                             selected_base_models: list = None):
         """
         In contrast to other traditional clustering methods, affprop does not require you to specify the number of
         clusters. In creators' terms, in affprop, each data point sends messages to all other points informing its
@@ -49,6 +48,7 @@ class Algorithms:
         to avoid numerical oscillations when updating these messages.
         :param entity_name: useful for results file naming
         :param embeddings
+        :param  selected_base_models, need this for jason naming
         :return: clusters
         """
         words = np.asarray(entity_group)
@@ -70,7 +70,6 @@ class Algorithms:
             metric = affinity
             features = embeddings
 
-        # precomputed because we are passing the similarity_matrix manually
         affprop = AffinityPropagation(affinity=affinity, damping=damping, random_state=None)
 
         affprop.fit(features)
@@ -88,7 +87,7 @@ class Algorithms:
 
         if self.save_output:
             with open(f"{str(Path.cwd())}/results/{self.representation[0]}_affinity_"
-                      f"{metric}_{str(damping)}_{entity_name}.json", "w+") as out:
+                      f"{metric}_{str(damping)}_{entity_name}_{selected_base_models}.json", "w+") as out:
                 json.dump(clusters, out, indent=4, sort_keys=True)
         return clusters
 
@@ -117,9 +116,6 @@ class Algorithms:
         :param selected_base_models need this for jason naming
         :return: clusters
         """
-
-        # keep metric in string form for the json name before it's being assinged the actual ram address of the function
-
         words = list(entity_group)
 
         if self.representation == "graph_representation":
@@ -144,7 +140,6 @@ class Algorithms:
         model = DBSCAN(eps=epsilon, min_samples=min_samples, metric=metric)
 
         features = np.array(features)
-
         model.fit(features)
 
         clusters = {}
@@ -167,14 +162,16 @@ class Algorithms:
 
         return clusters
 
-    def agglomerative(self, entity_group: set,
-                      metric: str,
-                      linkage: str,
-                      distance_threshold: float,
+    def agglomerative(self, entity_group: list = None,
+                      metric: str = None,
+                      linkage: str = None,
+                      distance_threshold: float = float,
                       compute_full_tree: bool = True,
                       n_clusters: int = None,
-                      json_path: str = None,
-                      set_name: str = ''):
+                      embeddings: list = None,
+                      entity_name: str = None,
+                      selected_base_models: list = None
+                      ):
         """
         Work in progress...
         In agglomerative algorithms, each item starts in its own cluster and the two most similar items are then
@@ -192,38 +189,44 @@ class Algorithms:
                 * single uses the minimum of the distances between all observations of the two sets.
         :param distance_threshold: float, default=None. The linkage distance threshold above which, clusters will not
         be merged. If not None, n_clusters must be None and compute_full_tree must be True.
-        :param json_path: where to save the non_incremental_results, default is in the folder "non_incremental_results"
-        accessible from the root.
         :param n_clusters: The number of clusters to find. It must be None if distance_threshold is not None.
         :param compute_full_tree: ‘auto’ or bool, default=’auto'. It must be True if distance_threshold is not None.
         By default compute_full_tree is “auto”, which is equivalent to True when distance_threshold is not None or that
          n_clusters is inferior to the maximum between 100 or 0.02 * n_samples. Otherwise, “auto” is equivalent to False
-        :param set_name: the name of the set - helps with json naming (optional)
+        :param embeddings
+        :param entity_name: the name of the set - helps with json naming (optional)
+        :param selected_base_models need this for jason naming
+        :return: clusters
         :return: clusters
         """
-
-        # keep metric in string form for the json name before it's being assinged the actual ram address of the function
-        str_metric = metric
-        if metric == "jaro":
-            metric = jaro
-        elif metric == "levenshtein":
-            metric = levenshtein
-        else:
-            print("Available metrics: [jaro, levenshtein]")
-            return
-
         data = list(entity_group)
         data = np.asarray(data)
 
-        distance_matrix = np.array([[metric(w1, w2) for w1 in data] for w2 in data])
+        if self.representation == "graph_representation":
+            affinity = "precomputed"
+            if metric == "jaro":
+                distance_matrix = np.array([[jaro(w1, w2) for w1 in data] for w2 in data])
+                features = distance_matrix
+            elif metric == "levenshtein":
+                similarity_matrix = -1 * np.array([[levenshtein(w1, w2) for w1 in data] for w2 in data])
+                features = similarity_matrix
+            else:
+                raise SystemExit(f"[ERROR]: function affinity_propagation() -> Provide one of the available metrics: "
+                                 f"['jaro', 'levenshtein']")
+        else:
+            # in this case we are dealing with embeddings; python currently supports only euclidean distance
+            affinity = metric
+            metric = affinity
+            features = embeddings
+            if selected_base_models:
+                selected_base_models = selected_base_models
 
-        agg = AgglomerativeClustering(affinity='precomputed',
+        agg = AgglomerativeClustering(affinity=affinity,
                                       linkage=linkage,
                                       distance_threshold=distance_threshold,
                                       compute_full_tree=compute_full_tree,
                                       n_clusters=n_clusters)
-
-        agg.fit(distance_matrix)
+        agg.fit(features)
 
         clusters = {}
         for idx, label in enumerate(agg.labels_):
@@ -236,14 +239,9 @@ class Algorithms:
             for key, item in clusters.items():
                 print(key, item)
         if self.save_output:
-            if json_path is not None:
-                with open(f"{json_path}/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}"
-                          f".json", "w+") as out:
-                    json.dump(clusters, out, indent=4, sort_keys=True)
-            else:
-                with open(f"graph_representation/non_incremental_results/"
-                        f"agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}.json", "w+") \
-                        as out:
-                    json.dump(clusters, out, indent=4, sort_keys=True)
+            with open(f"{str(Path.cwd())}/results/{self.representation[0]}_agglomarative_"
+                      f"{str(metric)}_{linkage}_{distance_threshold}_{compute_full_tree}_"
+                      f"{entity_name}_{selected_base_models}.json", "w+") as out:
+                json.dump(clusters, out, indent=4, sort_keys=True)
 
         return clusters
