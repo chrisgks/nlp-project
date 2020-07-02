@@ -157,7 +157,10 @@ locations + transfer learning with dataset of the other groups
 * [Melbourne Housing Market (contains addresses)](https://www.kaggle.com/anthonypino/melbourne-housing-market)
 * [Indian hotels on Booking.com (contains addresses)](https://www.kaggle.com/PromptCloudHQ/indian-hotels-on-bookingcom)
 
-## About [Flair](https://github.com/flairNLP/flair)
+## About [Flair](https://github.com/flairNLP/flair) & Vector Represenations
+
+when experiments that require vector representations, we'll be using the flair library.
+It is simple to use and supports _embe 
 
 Why Flair:
   * It comprises of popular and state-of-the-art word embeddings, such as GloVe, BERT, ELMo, Character Embeddings, etc. There are very easy to use thanks to the Flair API
