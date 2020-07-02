@@ -3,11 +3,15 @@ from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN
 from jaro import jaro_winkler_metric as jaro
 from leven import levenshtein
 import json
+import sys
+from pathlib import Path
+# sys.path.insert(0, str(Path.cwd()).replace("utils", ""))
+from varname import nameof
 
 
 class Algorithms:
 
-    def __init__(self, representation=None, print_output=False, save_output=False):
+    def __init__(self, representation: str = None, print_output: bool = False, save_output: bool = False):
         """
         Clustering algorithm constructor
         :param print_output: prints clusters to the console
@@ -15,19 +19,19 @@ class Algorithms:
         :param representation: choose string representation - vector or graph
         """
 
-        if representation is None:
-            raise SystemExit("[Error]: String representation is empty. Options: [vector, graph]")
+        if representation is None or representation not in ['vector_representation', 'graph_representation']:
+            raise SystemExit("[Error]: Please provide one of the available representations: "
+                             "['vector_representation', 'graph_representation']")
 
         self.representation = representation
         self.print_output = print_output
         self.save_output = save_output
 
-    def affinity_propagation(self, entity_group: set,
-                             metric: str,
-                             damping: float,
-                             preference: int,
-                             json_path=None,
-                             set_name=''):
+    def affinity_propagation(self, entity_group: list,
+                             metric: str = None,
+                             damping: float = None,
+                             embeddings: list = None,
+                             entity_name: str = None):
         """
         In contrast to other traditional clustering methods, affprop does not require you to specify the number of
         clusters. In creators' terms, in affprop, each data point sends messages to all other points informing its
@@ -40,42 +44,36 @@ class Algorithms:
         exemplar are placed in the same cluster.
 
         :param entity_group: company_names, locations, or  unknown_soup for everything else.
-        :param metric: distance/similarity matrix - jaro or levenshtein.
+        :param metric: distance/similarity matrix - jaro or levenshtein. Will only needed when representation is "graph"
         :param damping: damps the responsibility and availability messages
         to avoid numerical oscillations when updating these messages.
-        :param preference: controls how many exemplars are used.
-        :param json_path: where to save the non_incremental_results, default is in the folder "non_incremental_results"
-         accessible from the root.
-        :param set_name: the name of the set - helps with json naming (optional)
+        :param entity_name: useful for results file naming
+        :param embeddings
         :return: clusters
         """
+        words = np.asarray(entity_group)
 
-        # keep metric in string form for the json name before it's being assinged the actual ram address of the function
-        str_metric = metric
-
-        # aff prop works with similarity matrix, so convert to similarity/distance matric depending on the metric
-        # jaro returns similarity matrix, levenshtein returns distance matrix
-        if metric == "jaro":
-            metric = jaro
-            multiplier = 1
-        elif metric == "levenshtein":
-            metric = levenshtein
-            multiplier = -1
+        if self.representation == "graph_representation":
+            affinity = "precomputed"
+            if metric == "jaro":
+                distance_matrix = np.array([[jaro(w1, w2) for w1 in words] for w2 in words])
+                features = distance_matrix
+            elif metric == "levenshtein":
+                similarity_matrix = -1 * np.array([[levenshtein(w1, w2) for w1 in words] for w2 in words])
+                features = similarity_matrix
+            else:
+                raise SystemExit(f"[ERROR]: function affinity_propagation() -> Provide one of the available metrics: "
+                                 f"['jaro', 'levenshtein']")
         else:
-            print("Available metrics: [jaro, levenshtein]")
-            return
-
-        words = np.asarray(list(entity_group))
-
-        # affprop works with similarity matrix, mult by -1 to convert from distance to similarity
-        similarity_matrix = multiplier * np.array([[metric(w1, w2) for w1 in words] for w2 in words])
+            # in this case we are dealing with embeddings; python currently supports only euclidean distance
+            affinity = 'euclidean'
+            metric = affinity
+            features = embeddings
 
         # precomputed because we are passing the similarity_matrix manually
-        affprop = AffinityPropagation(affinity="precomputed",
-                                      damping=damping,
-                                      preference=preference,
-                                      random_state=None)
-        affprop.fit(similarity_matrix)
+        affprop = AffinityPropagation(affinity=affinity, damping=damping, random_state=None)
+
+        affprop.fit(features)
 
         clusters = {}
         for cluster_id in np.unique(affprop.labels_):
@@ -89,19 +87,18 @@ class Algorithms:
                 print(f"- **{exemplar}** --> {cluster_str}")
 
         if self.save_output:
-            if json_path is not None:
-                with open(f"{json_path}/affinity_{str_metric}_{str(damping)}_{str(preference)}_{set_name}.json", "w+")\
-                        as out:
-                    json.dump(clusters, out, indent=4, sort_keys=True)
-            else:
-                with open(
-                        f"graph_representation/non_incremental_results/affinity_{str_metric}_{str(damping)}_{str(preference)}_{set_name}.json", "w+")\
-                        as out:
-                    json.dump(clusters, out, indent=4, sort_keys=True)
-
+            with open(f"{str(Path.cwd())}/results/{self.representation[0]}_affinity_"
+                      f"{metric}_{str(damping)}_{entity_name}.json", "w+") as out:
+                json.dump(clusters, out, indent=4, sort_keys=True)
         return clusters
 
-    def dbscan(self, entity_group: set, metric: str, epsilon: float, min_samples: int, json_path=None, set_name=''):
+    def dbscan(self, entity_group: list = None,
+               metric: str = None,
+               epsilon: float = None,
+               min_samples: int = None,
+               embeddings: list = None,
+               entity_name: str = None,
+               selected_base_models: list = None):
         """
         Density-based clustering works by identifying “dense” clusters of points, allowing it to learn clusters of
         arbitrary shape and identify outliers in the data. The general idea behind ɛ-neighborhoods is given a data
@@ -115,35 +112,45 @@ class Algorithms:
         :param epsilon: ɛ, The radius (size) of the neighborhood around a data point p.
         :param min_samples: The minimum number of data points that have to be withing that neighborhood for a point
         to be considered a core point (of that given cluster ) - cluster density level threshold.
-        :param json_path: where to save the non_incremental_results, default is in the folder "non_incremental_results"
-        accessible from the root.
-        :param set_name: the name of the set - helps with json naming (optional)
+        :param embeddings
+        :param entity_name: the name of the set - helps with json naming (optional)
+        :param selected_base_models need this for jason naming
         :return: clusters
         """
 
         # keep metric in string form for the json name before it's being assinged the actual ram address of the function
-        str_metric = metric
-        if metric == "jaro":
-            metric = jaro
-        elif metric == "levenshtein":
-            metric = levenshtein
-        else:
-            print("Available metrics: [jaro, levenshtein]")
-            return
 
         words = list(entity_group)
 
-        distance_matrix = np.array([[metric(w1, w2) for w1 in words] for w2 in words])
+        if self.representation == "graph_representation":
+            affinity = "precomputed"
+            if metric == "jaro":
+                distance_matrix = np.array([[jaro(w1, w2) for w1 in words] for w2 in words])
+                features = distance_matrix
+            elif metric == "levenshtein":
+                similarity_matrix = -1 * np.array([[levenshtein(w1, w2) for w1 in words] for w2 in words])
+                features = similarity_matrix
+            else:
+                raise SystemExit(f"[ERROR]: function affinity_propagation() -> Provide one of the available metrics: "
+                                 f"['jaro', 'levenshtein']")
+        else:
+            # in this case we are dealing with embeddings; python currently supports only euclidean distance
+            affinity = metric
+            metric = affinity
+            features = embeddings
+            if selected_base_models:
+                selected_base_models = selected_base_models
 
-        model = DBSCAN(eps=epsilon,
-                       min_samples=min_samples,
-                       algorithm='brute',
-                       metric='precomputed')
-        model.fit(distance_matrix)
+        model = DBSCAN(eps=epsilon, min_samples=min_samples, metric=metric)
+
+        features = np.array(features)
+
+        model.fit(features)
 
         clusters = {}
         for idx, label in enumerate(model.labels_):
             if label not in clusters.keys():
+
                 # got an error here, needs to be int, not int64 - hence the type cast to int
                 clusters.update({int(label): [words[idx]]})
             else:
@@ -153,15 +160,10 @@ class Algorithms:
             for key, item in clusters.items():
                 print(key, item)
         if self.save_output:
-            if json_path is not None:
-                with open(f"{json_path}/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}_{set_name}.json", "w+")\
-                        as out:
-                    json.dump(clusters, out, indent=4, sort_keys=True)
-            else:
-                with open(
-                        f"graph_representation/non_incremental_results/dbscan_{str_metric}_{str(epsilon)}_{str(min_samples)}_{set_name}.json", "w+")\
-                        as out:
-                    json.dump(clusters, out, indent=4, sort_keys=True)
+            with open(f"{str(Path.cwd())}/results/{self.representation[0]}_dbscan_"
+                      f"{metric}_{str(epsilon)}_{str(min_samples)}_{entity_name}_{selected_base_models}.json", "w+") \
+                    as out:
+                json.dump(clusters, out, indent=4, sort_keys=True)
 
         return clusters
 
@@ -169,10 +171,10 @@ class Algorithms:
                       metric: str,
                       linkage: str,
                       distance_threshold: float,
-                      compute_full_tree=True,
-                      n_clusters=None,
-                      json_path=None,
-                      set_name=''):
+                      compute_full_tree: bool = True,
+                      n_clusters: int = None,
+                      json_path: str = None,
+                      set_name: str = ''):
         """
         Work in progress...
         In agglomerative algorithms, each item starts in its own cluster and the two most similar items are then
@@ -239,9 +241,9 @@ class Algorithms:
                           f".json", "w+") as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
             else:
-                with open(
-                        f"graph_representation/non_incremental_results/agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}"
-                        f".json", "w+") as out:
+                with open(f"graph_representation/non_incremental_results/"
+                        f"agglomerative_{str_metric}_{str(distance_threshold)}_{str(linkage)}_{set_name}.json", "w+") \
+                        as out:
                     json.dump(clusters, out, indent=4, sort_keys=True)
 
         return clusters
