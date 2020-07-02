@@ -67,7 +67,7 @@ they would contain string similarities between pair of words. This is also what 
     since these are not _named entities_. Subsequently, we'll be throwing them to a default group, named
      **unknown_soup**.
    
-![ner_clust.png](media/ner_clust.png)
+![ner_clust.png](media/ner_clustering.png)
 
    2. Feed samples that have been classified as _named entities_ from previous step through a Named Entity 
    Linking(NEL)/Disambiguation(NED)/Normalization(NEN) [model](https://nlpprogress.com/english/entity_linking.html). 
@@ -75,7 +75,7 @@ they would contain string similarities between pair of words. This is also what 
    If this works well, there is no need to cluster _named entities_.
    But, what happens to OOV named entities?
    
-![ner_linking_clust.png](media/ner_linking_clust.png)
+![ner_linking_clust.png](media/ner_linking_clustering.png)
 
    3. Scrap the web, built 5 data sets. One for each Named Entity. Select 5 base models. Fine-tune each base model
    on the 5 data sets respectively; add a linear layer. Each model now is a classifier. Proceed as described in [1.] - 
