@@ -47,16 +47,16 @@ To put it in a nutshell, a big differentive factor of these two families of appr
 - Team A approaches - naive:
    * Naively treat all strings the same way, withought taking into consideration their entity or other information. Pick a clustering algorithm, a dinstance/similarity metric and create the clusters (experiment with various algorithms/metics combinations). 
    
-![naive.png](workflows/naive.png)
+![naive.png](media/naive.png)
 
 - Team B approaches - filtering system first:
    1. Feed every sample through a Named Entity Recognition (NER) model to detect the entity to which each string belongs to, create the initial groups and then apply a clustering algorithm/metric to each group. The issue here is that current NER systems can't deal with company addresses, serial numbers, and physical goods, since these are not _named entities_. Subsequently, strings than have not been classified as _named entities_ by the model, will proceed directly to the clusternig phase. 
    
-![ner_clust.png](workflows/ner_clust.png)
+![ner_clust.png](media/ner_clust.png)
 
    2. Feed samples that have been classified as named entities from preveous step through a Named Entity Linking(NEL)/Disambiguation(NED)/Normalization(NEN) model [(there exist systems that can do both NER and Liniking)](https://nlpprogress.com/english/entity_linking.html). This, at first glance, seem like a way to group together entities such: “Marks and Spencers Ltd”, “M&S Limited”. But, unfortunately, as far as I'm concerned, this requaries a Knowledge Base. Various models are trained on (have learned word embeddings) different KBs (eg. wikipedia, CoNLL). What happens if, for example, "M&S Limited" and similar strings does  not exist in that Knowlidge Base? This is an issue. However If this could work in real life, what we would expect to achieve is that company names and locations need not pass through a clustering procces. Hence, we are eliminating clustering inaccuracies a bit more.
    
-![ner_linking_clust.png](workflows/ner_linking_clust.png)
+![ner_linking_clust.png](media/ner_linking_clust.png)
 
    3. See if we can find appropriate sources, scrap the web, and create datasets of addresses, serial numbers, and physical goods. Create a corpus, train a model (learn word embeddings with BERT maybe?) that can classify a string into one of these three classes. We could even attempt to build a custom NER model to include our new datasets. Here, based on the assumption that serial numbers and company addresses are _unique_, then that leaves us only the physical goods which need to be passed through a clustering process, but since these are real world physical items, BERT on wikipedia could also work.
 
