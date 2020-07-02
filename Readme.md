@@ -1,6 +1,6 @@
 # Entity Normalization Engine
-
-### Part 1
+### Problem description
+#### Part 1
 - We want to build an entity normalization engine. The input to this
 engine is short strings / phrases that could encompass the following
 entities: company names, company addresses, serial numbers,
@@ -17,7 +17,7 @@ trained model / some other form of knowledge and guidance.
 - Examples:
   - “Marks and Spencers Ltd” and “M&S Limited” are the same entity, but they differ from “NVIDIA Ireland”
   - “LONDON” and “LONDON, ENG” are the same but they differ from “ASIA”
-### Part 2
+#### Part 2
 Let’s do something real world now! Your system will receive strings
 one by one and you have to group together any entities that you have
 come across earlier.    
