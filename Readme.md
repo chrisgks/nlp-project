@@ -103,8 +103,9 @@ base models, word embeddings, etc..
      into these algorithm.
 
 ### Notes/constraints
-*In case of _Graph Representation_:
-    * Graph clustering algorithms could be a good choice since we are dealing with sting distance/similarity matrices - similar to graph distance/similarity matrices
+* In case of _Graph Representation_:
+    * Graph clustering algorithms could be a good choice since we are dealing with sting distance/similarity matrices 
+    - similar to graph distance/similarity matrices
       * graph clustering algo candidates:
         * [Markov Clustering](https://micans.org/mcl/)
         * [Restricted Neighbourhood Search Clustering](https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/mcl.pdf)
