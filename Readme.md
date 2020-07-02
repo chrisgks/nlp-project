@@ -72,7 +72,6 @@ they would contain string similarities between pair of words. This is also what 
    2. Feed samples that have been classified as _named entities_ from previous step through a Named Entity 
    Linking(NEL)/Disambiguation(NED)/Normalization(NEN) [model](https://nlpprogress.com/english/entity_linking.html). 
    This, at first glance, seem like a way to group together entities such: “Marks and Spencers Ltd”, “M&S Limited”.
-   But, what happens to OOV named entities?
    If this works well, there is no need to cluster _named entities_.
    But, what happens to OOV named entities?
    
