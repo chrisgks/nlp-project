@@ -35,6 +35,8 @@ for string in to_be_clustered:
         embedding = helpers.vectorize(string, selected_base_models)
         company_embeddings.append(embedding)
 
+        # Team A approach -Naive
+        # logging this in order to compare approaches later
         all_entities.append(string)
         all_entities_embeddings.append(embedding)
 
@@ -53,6 +55,8 @@ for string in to_be_clustered:
         embedding = helpers.vectorize(string, selected_base_models)
         locations_embeddings.append(embedding)
 
+        # Team A approach -Naive
+        # logging this in order to compare approaches later
         all_entities.append(string)
         all_entities_embeddings.append(embedding)
 
@@ -71,6 +75,8 @@ for string in to_be_clustered:
         embedding = helpers.vectorize(string, selected_base_models)
         unknown_soup_embeddings.append(embedding)
 
+        # Team A approach -Naive
+        # logging this in order to compare approaches later
         all_entities.append(string)
         all_entities_embeddings.append(embedding)
 
@@ -84,7 +90,8 @@ for string in to_be_clustered:
                                                                    embeddings=unknown_soup_embeddings,
                                                                    entity_name=nameof(unknown_soup),
                                                                    selected_base_models=selected_base_models)
-
+    # clustering without Named Entity Recognition
+    # logging this in order to compare approaches later
     all_clusters = clustering_algorithms.dbscan(entity_group=all_entities,
                                                 metric='euclidean',
                                                 epsilon=4.5,
