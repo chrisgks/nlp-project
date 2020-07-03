@@ -208,7 +208,7 @@ Depending on what _representation_ we decided to use, advise the corresponding *
  conventions that..."** section of the Readme's in those folders, get a glimpse of how the names of the experiments
  are formed, go to the corresponding **results** folder, spot the right files and check the results!
  
- **NOTE**: The best results I've got so far, can be found in the following files:
+ **NOTE**: The **best results** I've got so far, can be found in the following files:
 
 In this group, strings are classified by the Named Entity Recognition model as 'comany names'
 ```v_dbscan_euclidean_5_1_company_names_['flair_forward', 'flair_backward', 'glove'].json```
