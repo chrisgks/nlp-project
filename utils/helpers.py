@@ -47,7 +47,8 @@ def vectorize(string: str = None, selected_base_models: list = None):
 
     # if none of the above, then the model combination passed is not supported
     if not embeddings:
-        raise SystemExit(f"[ERROR]: function {vectorize.__name__}() -> {args} not available. Supported models: "
+        raise SystemExit(f"[ERROR]: function {vectorize.__name__}() -> {selected_base_models} not available. "
+                         f"Supported models: "
                          f"['bert', 'roberta', 'glove', 'character', 'flair_forward', 'flair_backward']")
 
     # we are making use of Flair's API, DocumentPoolEmbeddings takes a list of embeddings to be combined
