@@ -5,7 +5,8 @@ from leven import levenshtein
 from pathlib import Path
 from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN
 
-
+# might be a good idea to split this in two classes - one for handling 'vector representations' and one for
+# handling 'graph representation'
 class Algorithms:
 
     def __init__(self, representation: str = None, print_output: bool = False, save_output: bool = False):
