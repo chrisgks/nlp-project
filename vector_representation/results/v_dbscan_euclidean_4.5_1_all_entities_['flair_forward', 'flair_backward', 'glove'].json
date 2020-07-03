@@ -19,7 +19,8 @@
         "XYZ 13423 / ILD",
         "ABC/ICL/20891NC",
         "LONDON, GREAT BRITAIN",
-        "LONDON, ENGLAND"
+        "LONDON, ENGLAND",
+        "ICNAO02312"
     ],
     "5": [
         "HARDWOOD TABLE"
@@ -38,5 +39,8 @@
     ],
     "10": [
         "ASIA"
+    ],
+    "11": [
+        "LONDON, ENG"
     ]
 }
