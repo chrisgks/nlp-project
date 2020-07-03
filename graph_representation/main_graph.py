@@ -37,10 +37,10 @@ for string in to_be_clustered:
             continue
 
         final_company_names_clusters = clustering_algorithms.dbscan(entity_group=company_names,
-                                                                    metric='jaro',
+                                                                    metric="levenshtein",
                                                                     epsilon=5,
                                                                     min_samples=1,
-                                                                    entity_name=nameof(company_names),
+                                                                    entity_name=nameof(company_names)
                                                                     )
     if entity == 2 and string not in locations:
         locations.append(string)
