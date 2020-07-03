@@ -45,4 +45,4 @@ same as the previous one but with different parameters
 ```g_dbscan_levenshtein_5_1_company_names_.json```
 same as the previous one but with different parameters
 
-**NOTE**: I haven't found any combination that gives good results _yet_.
+**NOTE**: I haven't found any combination using string similarity as a metric that gives good results _yet_.
