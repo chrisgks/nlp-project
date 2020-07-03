@@ -8,7 +8,6 @@ sys.path.insert(0, str(Path.cwd()).replace("graph_representation", ""))
 from utils.helpers import entity_recognition
 from utils.clustering_algorithms import Algorithms
 
-
 to_be_clustered = open("../strings.txt", 'r')
 
 # our entity groups
@@ -19,7 +18,6 @@ unknown_soup = []
 all_entities = []
 
 clustering_algorithms = Algorithms(representation='graph_representation', print_output=False, save_output=True)
-
 
 for string in to_be_clustered:
 
@@ -36,12 +34,12 @@ for string in to_be_clustered:
         if len(company_names) < 2:
             continue
 
-        final_company_names_clusters = clustering_algorithms.dbscan(entity_group=company_names,
-                                                                    metric="levenshtein",
-                                                                    epsilon=5,
-                                                                    min_samples=1,
-                                                                    entity_name=nameof(company_names)
-                                                                    )
+        final_company_names_clusters = clustering_algorithms.affinity_propagation(entity_group=company_names,
+                                                                                  metric="jaro",
+                                                                                  damping=.5,
+                                                                                  preference=10,
+                                                                                  entity_name=nameof(company_names)
+                                                                                  )
     if entity == 2 and string not in locations:
         locations.append(string)
 
@@ -52,12 +50,12 @@ for string in to_be_clustered:
         if len(locations) < 2:
             continue
 
-        final_locations_clusters = clustering_algorithms.dbscan(entity_group=locations,
-                                                                metric="levenshtein",
-                                                                epsilon=6.5,
-                                                                min_samples=1,
-                                                                entity_name=nameof(locations)
-                                                                )
+        final_locations_clusters = clustering_algorithms.affinity_propagation(entity_group=locations,
+                                                                              metric="levenshtein",
+                                                                              damping=.5,
+                                                                              preference=10,
+                                                                              entity_name=nameof(locations)
+                                                                              )
     if entity == 3 and string not in unknown_soup:
         unknown_soup.append(string)
 
@@ -69,21 +67,20 @@ for string in to_be_clustered:
             continue
 
         final_unknown_soup_clusters = clustering_algorithms.dbscan(entity_group=unknown_soup,
-                                                                   metric="levenshtein",
-                                                                   epsilon=3,
+                                                                   metric="jaro",
+                                                                   epsilon=4,
                                                                    min_samples=1,
                                                                    entity_name=nameof(unknown_soup)
                                                                    )
 
     # clustering without Named Entity Recognition
     # logging this in order to compare approaches later
-    all_clusters = clustering_algorithms.dbscan(entity_group=all_entities,
-                                                metric="levenshtein",
-                                                epsilon=4.5,
-                                                min_samples=1,
-                                                entity_name=nameof(all_entities),
-                                                )
-
+    all_clusters = clustering_algorithms.affinity_propagation(entity_group=all_entities,
+                                                              metric="jaro",
+                                                              damping=.5,
+                                                              preference=3,
+                                                              entity_name=nameof(all_entities)
+                                                              )
 
 # need to catch errors in case clusters are empty
 print("\n--> final_company_names:")
