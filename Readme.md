@@ -86,8 +86,8 @@ and 'company adresses'
 
  **Physical locations**
  
-      cluster id | in the same cluster
-    ------------- | -------------
+   cluster id | in the same cluster
+  ------------- | -------------
     0  | 'LONDON', 'LONDON, GREAT BRITAIN', 'LONDON, ENGLAND'
     1  | 'HONG KONG'
     2  | 'ASIA'
