@@ -1,4 +1,4 @@
-#### Naming conventions for experiments using pre-computed string similarity matrices (aka "graph representation")
+### Naming conventions for experiments using pre-computed string similarity matrices (aka "graph representation")
 
 Currently implemented clustering algorithms that can handle "graph representations":
 * dbscan
