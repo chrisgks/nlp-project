@@ -1,4 +1,4 @@
-#### Naming conventions for experiments using word embeddings
+## Naming conventions for experiments using word embeddings
 
 Currently implemented clustering algorithms that can handle word embeddings are:
 * dbscan
@@ -29,9 +29,9 @@ hugging face library
 
 ## About Flair
 transformer pretrained models to choose from: https://huggingface.co/transformers/pretrained_models.html
-any of these can be used https://huggingface.co/transformers/pretrained_models.html  :O
+any of these can be used   :O
 * Flair Embeddings - Significance of Backwards vs Forwards?
-    * Upon further research I found that during training forward language models try to predict the next word in a 
+    * during training forward language models try to predict the next word in a 
     sequence. Backwards language models on the other hand start at the end of a sequence and attempt to predict the
     proceeding word. It seems that by stacking both forward and backwards models produced from the same data-set you 
     get better results than using a forward or backwards model alone.
@@ -57,22 +57,17 @@ any of these can be used https://huggingface.co/transformers/pretrained_models.h
     * embedding are extracted in flair from the first and last character states of each word to generate a word embedding
  
         
-## Others
+### Notes about numerical representation
 
 
 word embeddings = word vector = distributed representations    
 it is a dense representation of words in a low-dimensional vector space    
 * one-hot representation:
-king = [1 0 0 0 0 0]
-queen = [0 1 0 0 0 0]
-book = [0 0 1 0 0 0]
 a vector for every word, can't capture relationships between words
 
 * Distrebuted representation:
-
-much less dimensions 2, 100, but not thousants, much smaller vectors *the meaning is distributed across all the dimentions*
-king is not stuck in the first column, the meaning is distributed among the 3 dimensions, its, 0.3 of this word, 0.8 of that word etc.
-that's why it's called distributed    
+* less dimensions unlike in one-hot, much smaller vectors 
+* the meaning is distributed among all dimensions *
     
 how to come up with these vectors?    
 * Fastetext: word is a sum of its parts: going = go + oi + in + ng + goi + oin + ing
@@ -81,7 +76,7 @@ how to come up with these vectors?
 * word2vec is actually a classification algorithm, it's trying to find the closest meanin-wise word to another
 for example: input: Context Cute, output: output: word Kitten
 
-## Types of embeddings
+### Types of embeddings
 
 ![embedding_types.png](../media/embedding_types.png)
 
@@ -119,13 +114,3 @@ word representation progress in nlp field
     
 ![static_vs_dynamic_embeddings.png](../media/static_vs_dynamic_embeddings.png)
 
-
-
-    
-
-
-* dbscan clustering algorithm:
-    * DBSCAN - Density-Based Spatial Clustering of Applications with Noise.
-    Finds core samples of high density and expands clusters from them.
-    Good for data which contains clusters of similar density.    
-    __question__: does our data assumes clusters of similar density?
