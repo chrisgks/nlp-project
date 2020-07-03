@@ -1,5 +1,31 @@
-# Notes
+#### Naming conventions for experiments using word embeddings
 
+Currently implemented clustering algorithms that can handle word embeddings are:
+* dbscan
+    * parameters: string_representation, entity_group, metric, epsilon, min samples, 
+    entity name, selected_base_models, embeddings
+* affinity propagation
+    * parameters: string_representation, entity_group, metric, damping, preference,
+    entity_name, selected_base_models, embeddings
+* agglomerative clustering
+    * parameters: string_representation, entity_group, metric, distance_threshold, 
+    compute_full_tree, entity_name, selected_base_models, embeddings
+
+Available embeddings:
+* bert
+* roberta
+* glove
+* flair's 'character embeddings'
+* flair's 'forward' and 'backward' embeddings
+* easy implementation to support all of the pre-trained models available in 
+hugging face library
+* combinations of all other embeddings
+
+##### Example
+
+
+
+# Notes
 
 ## About Flair
 transformer pretrained models to choose from: https://huggingface.co/transformers/pretrained_models.html
