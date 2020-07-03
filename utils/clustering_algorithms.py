@@ -1,20 +1,18 @@
 import numpy as np
 import json
-from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN
 from jaro import jaro_winkler_metric as jaro
 from leven import levenshtein
 from pathlib import Path
-# sys.path.insert(0, str(Path.cwd()).replace("utils", ""))
-
+from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN
 
 class Algorithms:
 
     def __init__(self, representation: str = None, print_output: bool = False, save_output: bool = False):
         """
         Clustering algorithm constructor
-        :param print_output: prints clusters to the console
-        :param save_output: save the clusters in a json file
-        :param representation: choose string representation - vector or graph
+        :param print_output, prints clusters to the console
+        :param save_output, save the clusters in a json file
+        :param representation, choose string representation 'vector representation', or 'graph representation'
         """
 
         if representation is None or representation not in ['vector_representation', 'graph_representation']:
