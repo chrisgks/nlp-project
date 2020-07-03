@@ -276,7 +276,7 @@ and 'company adresses'
    8  | 'ICNAO02312']
 
 
-### Commenting on these specific results
+### Comments on results
 It is obvious that Flair's Named Entity Recognition did the following errors:
 1. classified 'XYZ 13423 / ILD' and 'LONDON, ENG' as company names where the first one is a serial number and the latter
 is a physical location
