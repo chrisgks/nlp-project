@@ -27,6 +27,7 @@ class Algorithms:
     def affinity_propagation(self, entity_group: list,
                              metric: str = None,
                              damping: float = None,
+                             preference: int = None,
                              embeddings: list = None,
                              entity_name: str = None,
                              selected_base_models: list = None):
@@ -44,11 +45,14 @@ class Algorithms:
         :param entity_group, company_names, locations, or  unknown_soup for everything else.
         :param metric, distance/similarity matrix - jaro or levenshtein. Will only needed when "graph representation"
          is being selected at constructor time
-        :param damping, damps the responsibility and availability messagesto avoid numerical oscillations when updating
+        :param damping, damps the responsibility and availability messages to avoid numerical oscillations when updating
          these messages.
         :param entity_name, useful for results file naming
         :param embeddings, list or embeddings in case of vector representation
-        :param  selected_base_models, need this for jason naming
+        :param selected_base_models, need this for jason naming
+        :param preference, Preferences for each point - points with larger values of preferences are more likely to be
+        chosen as exemplars. The number of exemplars, ie of clusters, is influenced by the input preferences value.
+        If the preferences are not passed as arguments, they will be set to the median of the input similarities.
         :return: clusters
         """
         words = np.asarray(entity_group)
@@ -56,6 +60,7 @@ class Algorithms:
         # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
+            selected_base_models = ''
             if metric == "jaro":
                 distance_matrix = np.array([[jaro(w1, w2) for w1 in words] for w2 in words])
                 features = distance_matrix
@@ -73,7 +78,7 @@ class Algorithms:
             if selected_base_models:
                 selected_base_models = selected_base_models
 
-        affprop = AffinityPropagation(affinity=affinity, damping=damping, random_state=None)
+        affprop = AffinityPropagation(affinity=affinity, damping=damping, preference=preference, random_state=None)
         affprop.fit(features)
 
         clusters = {}
@@ -89,7 +94,7 @@ class Algorithms:
         if self.save_output:
             # name of json is dynamic - all parameter values are integrated in the name of the file itself
             with open(f"{str(Path.cwd())}/results/{self.representation[0]}_affinity_"
-                      f"{metric}_{str(damping)}_{entity_name}_{selected_base_models}.json", "w+") as out:
+                      f"{metric}_{str(damping)}_{preference}_{entity_name}_{selected_base_models}.json", "w+") as out:
                 json.dump(clusters, out, indent=4, sort_keys=True)
 
         return clusters
@@ -126,6 +131,7 @@ class Algorithms:
         # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
+            selected_base_models = ''
             if metric == "jaro":
                 distance_matrix = np.array([[jaro(w1, w2) for w1 in words] for w2 in words])
                 features = distance_matrix
@@ -212,6 +218,7 @@ class Algorithms:
         # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
+            selected_base_models = ''
             if metric == "jaro":
                 distance_matrix = np.array([[jaro(w1, w2) for w1 in data] for w2 in data])
                 features = distance_matrix
