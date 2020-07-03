@@ -86,7 +86,7 @@ for string in to_be_clustered:
 
         final_unknown_soup_clusters = clustering_algorithms.dbscan(entity_group=unknown_soup,
                                                                    metric='euclidean',
-                                                                   epsilon=3,
+                                                                   epsilon=2.5,
                                                                    min_samples=1,
                                                                    embeddings=unknown_soup_embeddings,
                                                                    entity_name=nameof(unknown_soup),
