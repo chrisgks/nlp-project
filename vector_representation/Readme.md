@@ -51,7 +51,7 @@ same as previous except:
 ```v_dbscan_euclidean_6.5_1_locations_['bert', 'flair_forward', 'flair_backward', 'glove'].json```
 another random combination
 
-**NOTE ON RESULTS**: The first 3 examples are actually **the **best results I've managed to get so far.
+**NOTE ON RESULTS**: The first 3 examples are actually **the best results** I've managed to get so far.
 
 
 ## Notes
