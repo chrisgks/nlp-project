@@ -210,8 +210,9 @@ Depending on what _representation_ we decided to use, advise the corresponding *
  
  **NOTE**: The **best results** I've got so far, can be found in the following files:
 
+
+```vector_representation/results/v_dbscan_euclidean_5_1_company_names_['flair_forward', 'flair_backward', 'glove'].json```
 In this group, strings are classified by the Named Entity Recognition model as 'comany names'
-```v_dbscan_euclidean_5_1_company_names_['flair_forward', 'flair_backward', 'glove'].json```
 * Where:
     * v: **string representation prefix** - v for vector
     * dbscan: clustering algorithm used
@@ -221,16 +222,18 @@ In this group, strings are classified by the Named Entity Recognition model as '
     * company_names: **entity_name** parameter,
     * [['flair_forward', 'flair_backward', 'glove']]: **selected_base_models** parameter,
 
+```vector_representation/results/v_dbscan_euclidean_6.5_1_locations_['flair_forward', 'flair_backward', 'glove'].json```
 In this group, strings are classified by the Named Entity Recognition model as 'physical locations'
-```v_dbscan_euclidean_6.5_1_locations_['flair_forward', 'flair_backward', 'glove'].json```
+
 * Where (same as previous except):
     * 5: **epsilon** parameter,
     * 1: **min_samples** parameter,
     * locations: **entity_name** parameter
 
+
+```vector_representation/results/v_dbscan_euclidean_2.5_1_unknown_soup_['flair_forward', 'flair_backward', 'glove'].json```
 In this group, strings are not 'company names' nor 'physical locations' - we have 'serial numbers', 'physical goods',
 and 'company adresses'
-```v_dbscan_euclidean_2.5_1_unknown_soup_['flair_forward', 'flair_backward', 'glove'].json```
 * Where (same as previous except):
     * 5: **2.5** parameter,
     * 1: **min_samples** parameter,
@@ -257,7 +260,6 @@ and 'company adresses'
     0  | 'LONDON', 'LONDON, GREAT BRITAIN', 'LONDON, ENGLAND'
     1  | 'HONG KONG'
     2  | 'ASIA'
-
 
 **Unknown Soup** (or 'everything else')
 
