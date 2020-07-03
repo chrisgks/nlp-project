@@ -19,7 +19,6 @@ Available string similarity metrics:
 
 
 ##### Examples
-
 ```g_affinity_jaro_0.5_3_all_entities_.json```
 * g: **string representation prefix** - g for graph,
 * affinity: clustering algorithm used, retrieved from the name of the algorithm
@@ -28,15 +27,13 @@ Available string similarity metrics:
 * 3: **preference** parameter,
 * all entities: **entity name** parameter
 
-> g_affinity_levenshtein_0.5_10_locations_.json
 
+```g_affinity_levenshtein_0.5_10_locations_.json```
 same as the previous one but with different parameters
 
 
 
-> g_dbscan_jaro_3_1_unknown_soup_.json
-
-
+```g_dbscan_jaro_3_1_unknown_soup_.json```
 * g: **string representation prefix** - g for graph,
 * dbscan: clustering algorithm used, retrieved from the name of the algorithm
 * jaro: **metric** used used parameter,
@@ -45,7 +42,7 @@ same as the previous one but with different parameters
 * unknown_soup: **entity name** parameter
 
 
-g_dbscan_levenshtein_5_1_company_names_.json
+```g_dbscan_levenshtein_5_1_company_names_.json```
 same as the previous one but with different parameters
 
-**NOTE**: I haven't found any combinations that gives good results _yet_.
+**NOTE**: I haven't found any combination that gives good results _yet_.
