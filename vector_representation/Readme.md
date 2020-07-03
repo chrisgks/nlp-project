@@ -2,14 +2,14 @@
 
 Currently implemented clustering algorithms that can handle word embeddings are:
 * dbscan
-    * parameters: string_representation, entity_group, metric, epsilon, min samples, 
-    entity name, selected_base_models, embeddings
+    * parameters: **string_representation, entity_group, metric, epsilon, min samples, 
+    entity name, selected_base_models, embeddings**
 * affinity propagation
-    * parameters: string_representation, entity_group, metric, damping, preference,
-    entity_name, selected_base_models, embeddings
+    * parameters: **string_representation, entity_group, metric, damping, preference,
+    entity_name, selected_base_models, embeddings**
 * agglomerative clustering
-    * parameters: string_representation, entity_group, metric, distance_threshold, 
-    compute_full_tree, entity_name, selected_base_models, embeddings
+    * parameters: **string_representation, entity_group, metric, distance_threshold, 
+    compute_full_tree, entity_name, selected_base_models, embeddings**
 
 Available embeddings:
 * bert
@@ -21,13 +21,42 @@ Available embeddings:
 hugging face library
 * combinations of all other embeddings
 
-##### Example
+#### Examples
+```v_dbscan_euclidean_5_1_company_names_['flair_forward', 'flair_backward', 'glove'].json```
+* v: **string representation prefix** - v for vector,
+* dbscan: clustering algorithm used, retrieved from the name of the algorithm
+* euclidean: **metric** used used parameter,
+* 5: **epsilon** parameter,
+* 1: **min_samples** parameter,
+* company_names: **entity_name** parameter,
+* [['flair_forward', 'flair_backward', 'glove']]: **selected_base_models** parameter,
+supports word embeddings combinations
+
+
+```v_dbscan_euclidean_6.5_1_locations_['flair_forward', 'flair_backward', 'glove'].json```
+same as previous except:
+* 5: **epsilon** parameter,
+* 1: **min_samples** parameter,
+* locations: **entity_name** parameter
+
+
+```v_dbscan_euclidean_2.5_1_unknown_soup_['flair_forward', 'flair_backward', 'glove'].json```
+same as previous except:
+* 5: **2.5** parameter,
+* 1: **min_samples** parameter,
+* locations: **entity_name** parameter
 
 
 
-# Notes
+```v_dbscan_euclidean_6.5_1_locations_['bert', 'flair_forward', 'flair_backward', 'glove'].json```
+another random combination
 
-## About Flair
+**NOTE ON RESULTS**: The first 3 examples are actually **the **best results I've managed to get so far.
+
+
+## Notes
+
+### About Flair
 transformer pretrained models to choose from: https://huggingface.co/transformers/pretrained_models.html
 any of these can be used   :O
 * Flair Embeddings - Significance of Backwards vs Forwards?
@@ -57,23 +86,21 @@ any of these can be used   :O
     * embedding are extracted in flair from the first and last character states of each word to generate a word embedding
  
         
-### Notes about numerical representation
-
-
+### About numerical representation of strings in general
 word embeddings = word vector = distributed representations    
-it is a dense representation of words in a low-dimensional vector space    
-* one-hot representation:
-a vector for every word, can't capture relationships between words
+it is a dense representation of words in a low-dimensional vector space   
+ 
+* one-hot representation, a vector for every word, can't capture relationships between words
 
 * Distrebuted representation:
-* less dimensions unlike in one-hot, much smaller vectors 
-* the meaning is distributed among all dimensions *
+    * less dimensions unlike in one-hot, much smaller vectors 
+    * the meaning is distributed among all dimensions *
     
 how to come up with these vectors?    
 * Fastetext: word is a sum of its parts: going = go + oi + in + ng + goi + oin + ing
-    * captures morphology of word - better from word2vec for this reason - apart from this subword thing word2vec and fasttext are the same
-    fasttext is slower than word2vec
-* word2vec is actually a classification algorithm, it's trying to find the closest meanin-wise word to another
+    * captures morphology of word - better from word2vec for this reason - apart from this subword thing word2vec and 
+    fasttext are the same, fasttext is slower than word2vec
+* word2vec is actually a classification algorithm, it's trying to find the closest word to another
 for example: input: Context Cute, output: output: word Kitten
 
 ### Types of embeddings
