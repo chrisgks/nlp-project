@@ -42,17 +42,19 @@ class Algorithms:
         is associated with one of its targets, that target becomes the point’s exemplar. All points with the same
         exemplar are placed in the same cluster.
 
-        :param entity_group: company_names, locations, or  unknown_soup for everything else.
-        :param metric: distance/similarity matrix - jaro or levenshtein. Will only needed when representation is "graph"
-        :param damping: damps the responsibility and availability messages
-        to avoid numerical oscillations when updating these messages.
-        :param entity_name: useful for results file naming
-        :param embeddings
+        :param entity_group, company_names, locations, or  unknown_soup for everything else.
+        :param metric, distance/similarity matrix - jaro or levenshtein. Will only needed when "graph representation"
+         is being selected at constructor time
+        :param damping, damps the responsibility and availability messagesto avoid numerical oscillations when updating
+         these messages.
+        :param entity_name, useful for results file naming
+        :param embeddings, list or embeddings in case of vector representation
         :param  selected_base_models, need this for jason naming
         :return: clusters
         """
         words = np.asarray(entity_group)
-
+        # graph representation aka string similarity - requires precombuted matrix of destances between strings
+        # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
             if metric == "jaro":
@@ -69,14 +71,14 @@ class Algorithms:
             affinity = 'euclidean'
             metric = affinity
             features = embeddings
+            if selected_base_models:
+                selected_base_models = selected_base_models
 
         affprop = AffinityPropagation(affinity=affinity, damping=damping, random_state=None)
-
         affprop.fit(features)
 
         clusters = {}
         for cluster_id in np.unique(affprop.labels_):
-
             exemplar = words[affprop.cluster_centers_indices_[cluster_id]]
             cluster = np.unique(words[np.nonzero(affprop.labels_ == cluster_id)])
             cluster_str = ", ".join(cluster)
@@ -86,9 +88,11 @@ class Algorithms:
                 print(f"- **{exemplar}** --> {cluster_str}")
 
         if self.save_output:
+            # name of json is dynamic - all parameter values are integrated in the name of the file itself
             with open(f"{str(Path.cwd())}/results/{self.representation[0]}_affinity_"
                       f"{metric}_{str(damping)}_{entity_name}_{selected_base_models}.json", "w+") as out:
                 json.dump(clusters, out, indent=4, sort_keys=True)
+
         return clusters
 
     def dbscan(self, entity_group: list = None,
@@ -106,18 +110,21 @@ class Algorithms:
         distance ɛ away from p. In 2D space, the ɛ-neighborhood of a point p is the set of points contained in a circle
          of radius ɛ, centered at p.
 
-        :param entity_group: name of the entity group (company name, location, unknown soup).
-        :param metric: jaro or levenshtein.
-        :param epsilon: ɛ, The radius (size) of the neighborhood around a data point p.
-        :param min_samples: The minimum number of data points that have to be withing that neighborhood for a point
+        :param entity_group, name of the entity group (company name, location, unknown soup).
+        :param metric, distance/similarity matrix - jaro or levenshtein. Will only needed when "graph representation"
+         is being selected at constructor time
+        :param epsilon, ɛ, the radius (size) of the neighborhood around a data point p.
+        :param min_samples, the minimum number of data points that have to be withing that neighborhood for a point
         to be considered a core point (of that given cluster ) - cluster density level threshold.
-        :param embeddings
-        :param entity_name: the name of the set - helps with json naming (optional)
-        :param selected_base_models need this for jason naming
+        :param embeddings, list or embeddings in case of vector representation
+        :param entity_name, the name of the set - helps with json naming (optional)
+        :param selected_base_models, need this for jason naming
         :return: clusters
         """
         words = list(entity_group)
 
+        # graph representation aka string similarity - requires precombuted matrix of destances between strings
+        # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
             if metric == "jaro":
@@ -145,7 +152,6 @@ class Algorithms:
         clusters = {}
         for idx, label in enumerate(model.labels_):
             if label not in clusters.keys():
-
                 # got an error here, needs to be int, not int64 - hence the type cast to int
                 clusters.update({int(label): [words[idx]]})
             else:
@@ -154,7 +160,9 @@ class Algorithms:
         if self.print_output:
             for key, item in clusters.items():
                 print(key, item)
+
         if self.save_output:
+            # name of json is dynamic - all parameter values are integrated in the name of the file itself
             with open(f"{str(Path.cwd())}/results/{self.representation[0]}_dbscan_"
                       f"{metric}_{str(epsilon)}_{str(min_samples)}_{entity_name}_{selected_base_models}.json", "w+") \
                     as out:
@@ -165,7 +173,7 @@ class Algorithms:
     def agglomerative(self, entity_group: list = None,
                       metric: str = None,
                       linkage: str = None,
-                      distance_threshold: float = float,
+                      distance_threshold: float = None,
                       compute_full_tree: bool = True,
                       n_clusters: int = None,
                       embeddings: list = None,
@@ -173,35 +181,36 @@ class Algorithms:
                       selected_base_models: list = None
                       ):
         """
-        Work in progress...
         In agglomerative algorithms, each item starts in its own cluster and the two most similar items are then
         clustered. We continue accumulating the most similar items or clusters together two at a time until
         there is one cluster.
 
-        :param entity_group: name of the entity group (company name, location, unknown soup).
-        :param metric: jaro or levenshtein.
-        :param linkage: {“ward”, “complete”, “average”, “single”}, default=”ward” .Which linkage criterion to use.
+        :param entity_group, name of the entity group (company name, location, unknown soup).
+        :param metric, distance/similarity matrix - jaro or levenshtein. Will only needed when "graph representation"
+         is being selected at constructor time
+        :param linkage, {“ward”, “complete”, “average”, “single”}, default=”ward” .Which linkage criterion to use.
         The linkage criterion determines which distance to use between sets of observation. The algorithm will merge
         the pairs of cluster that minimize this criterion.
                 * ward minimizes the variance of the clusters being merged.
                 * average uses the average of the distances of each observation of the two sets.
                 * complete or maximum linkage uses the maximum distances between all observations of the two sets.
                 * single uses the minimum of the distances between all observations of the two sets.
-        :param distance_threshold: float, default=None. The linkage distance threshold above which, clusters will not
+        :param distance_threshold, float, default=None. The linkage distance threshold above which, clusters will not
         be merged. If not None, n_clusters must be None and compute_full_tree must be True.
-        :param n_clusters: The number of clusters to find. It must be None if distance_threshold is not None.
-        :param compute_full_tree: ‘auto’ or bool, default=’auto'. It must be True if distance_threshold is not None.
+        :param n_clusters, the number of clusters to find. It must be None if distance_threshold is not None.
+        :param compute_full_tree, ‘auto’ or bool, default=’auto'. It must be True if distance_threshold is not None.
         By default compute_full_tree is “auto”, which is equivalent to True when distance_threshold is not None or that
          n_clusters is inferior to the maximum between 100 or 0.02 * n_samples. Otherwise, “auto” is equivalent to False
         :param embeddings
-        :param entity_name: the name of the set - helps with json naming (optional)
+        :param entity_name, the name of the set - helps with json naming (optional)
         :param selected_base_models need this for jason naming
-        :return: clusters
         :return: clusters
         """
         data = list(entity_group)
         data = np.asarray(data)
 
+        # graph representation aka string similarity - requires precombuted matrix of destances between strings
+        # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
             if metric == "jaro":
@@ -239,6 +248,7 @@ class Algorithms:
             for key, item in clusters.items():
                 print(key, item)
         if self.save_output:
+            # name of json is dynamic - all parameter values are integrated in the name of the file itself
             with open(f"{str(Path.cwd())}/results/{self.representation[0]}_agglomarative_"
                       f"{str(metric)}_{linkage}_{distance_threshold}_{compute_full_tree}_"
                       f"{entity_name}_{selected_base_models}.json", "w+") as out:
