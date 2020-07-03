@@ -122,7 +122,7 @@ class Algorithms:
         """
         words = list(entity_group)
 
-        # graph representation aka string similarity - requires precombuted matrix of destances between strings
+        # graph representation aka string similarity - requires precomputed matrix of distances between strings
         # and "custom"  distance metric metric
         if self.representation == "graph_representation":
             affinity = "precomputed"
@@ -130,7 +130,7 @@ class Algorithms:
                 distance_matrix = np.array([[jaro(w1, w2) for w1 in words] for w2 in words])
                 features = distance_matrix
             elif metric == "levenshtein":
-                similarity_matrix = -1 * np.array([[levenshtein(w1, w2) for w1 in words] for w2 in words])
+                similarity_matrix = np.array([[levenshtein(w1, w2) for w1 in words] for w2 in words])
                 features = similarity_matrix
             else:
                 raise SystemExit(f"[ERROR]: function affinity_propagation() -> Provide one of the available metrics: "
@@ -143,7 +143,7 @@ class Algorithms:
             if selected_base_models:
                 selected_base_models = selected_base_models
 
-        model = DBSCAN(eps=epsilon, min_samples=min_samples, metric=metric)
+        model = DBSCAN(eps=epsilon, min_samples=min_samples, metric=affinity)
 
         features = np.array(features)
         model.fit(features)
