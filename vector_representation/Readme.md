@@ -1,4 +1,4 @@
-## Naming conventions for experiments using word embeddings
+## Parameters, algorithms and naming conventions that support word embeddings
 
 Currently implemented clustering algorithms that can handle word embeddings are:
 * dbscan
