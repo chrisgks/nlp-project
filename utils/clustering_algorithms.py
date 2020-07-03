@@ -5,6 +5,7 @@ from leven import levenshtein
 from pathlib import Path
 from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN
 
+
 class Algorithms:
 
     def __init__(self, representation: str = None, print_output: bool = False, save_output: bool = False):
