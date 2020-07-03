@@ -1,13 +1,14 @@
 import sys
 import pprint
 from pathlib import Path
+from varname import nameof
 
 sys.path.insert(0, str(Path.cwd()).replace("vector_representation", ""))
 
 from utils.clustering_algorithms import Algorithms
 from utils.helpers import entity_recognition
 from utils import helpers
-from varname import nameof
+
 
 to_be_clustered = open("../strings.txt", 'r')
 
