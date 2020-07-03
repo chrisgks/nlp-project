@@ -192,23 +192,127 @@ conda activate vectorai
 ```bash
 pip install -r requirements.txt     
 ```
-6.. try main_grouped.py to cluster already grouped results from NER at once
-```bash
-python main_grouped.py     
-```
-7.. try main_incremental.py to cluster one sample at a time
-```bash
-python main_incremental.py
-```
-8.. try hyper_parameter_exploration.py to explore various algorithm-parameter combinations
-```bash
-python hyper_parameter_exploration.py
-```
-9.. check results folder to see performance of main_grouped.py and hyper_parameter_exploration.py
-```bash
-cd results
-```
-10.. check incremental_results to see performance of main_incremental.py
-```bash
-cd incremental_results
-```
+At this point we need to decide if we want to use word embeddings or pre-computed distance matrices (similar to graph
+nodes) to represent the strings
+
+  use vector representations  | use 'graph-like' representations
+  ------------- | -------------
+   6.. cd to vector_representation | 6.. cd to graph_representation
+  ```cd vector_representation```  | ```cd graph_representation```
+  7.. run main_vec script to cluster strings.txt | 7.. run main_graph script to cluster strings.txt
+  ```python main_vec.py```  | ```pyton main_graph.py```
+
+
+## How to 'parse' the results we just created
+Depending on what _representation_ we decided to use, advise the corresponding **"Parameters, algorithms and naming
+ conventions that..."** section of the Readme's in those folders, get a glimpse of how the names of the experiments
+ are formed, go to the corresponding **results** folder, spot the right files and check the results!
+ 
+ **NOTE**: The best results I've got so far, can be found in the following files:
+
+In this group, strings are classified by the Named Entity Recognition model as 'comany names'
+```v_dbscan_euclidean_5_1_company_names_['flair_forward', 'flair_backward', 'glove'].json```
+* Where:
+    * v: **string representation prefix** - v for vector
+    * dbscan: clustering algorithm used
+    * euclidean: **metric** used parameter,
+    * 5: **epsilon** parameter,
+    * 1: **min_samples** parameter,
+    * company_names: **entity_name** parameter,
+    * [['flair_forward', 'flair_backward', 'glove']]: **selected_base_models** parameter,
+
+In this group, strings are classified by the Named Entity Recognition model as 'physical locations'
+```v_dbscan_euclidean_6.5_1_locations_['flair_forward', 'flair_backward', 'glove'].json```
+* Where (same as previous except):
+    * 5: **epsilon** parameter,
+    * 1: **min_samples** parameter,
+    * locations: **entity_name** parameter
+
+In this group, strings are not 'company names' nor 'physical locations' - we have 'serial numbers', 'physical goods',
+and 'company adresses'
+```v_dbscan_euclidean_2.5_1_unknown_soup_['flair_forward', 'flair_backward', 'glove'].json```
+* Where (same as previous except):
+    * 5: **2.5** parameter,
+    * 1: **min_samples** parameter,
+    * locations: **entity_name** parameter
+ 
+ 
+ 
+ **Actual Results**
+ 
+ **Company names**
+ 
+   cluster id| in the same cluster
+  ------------- | -------------
+   0  | 'MARKS AND SPENCERS LTD', 'M&S CORPORATION LIMITED'
+   1  | 'NVIDIA IRELAND'
+   2  | 'INTEL LLC'
+   3  | 'XYZ 13423 / ILD'
+   4  | 'LONDON, ENG'
+
+ **Physical locations**
+ 
+   cluster id| in the same cluster
+    ------------- | -------------
+    0  | 'LONDON', 'LONDON, GREAT BRITAIN', 'LONDON, ENGLAND'
+    1  | 'HONG KONG'
+    2  | 'ASIA'
+
+
+**Unknown Soup** (or 'everything else')
+
+   cluster id| in the same cluster
+  ------------- | -------------
+   0  | 'M&S LIMITED'
+   1  | 'SLOUGH SE12 2XY'
+   2  | '33 TIMBER YARD, LONDON, L1 8XY'
+   3  | '44 CHINA ROAD, KOWLOON, HONG KONG'
+   4  | 'ABC/ICL/20891NC'
+   5  | 'HARDWOOD TABLE'
+   6  | 'PLASTIC BOTTLE'
+   7  | 'TOYS'
+   8  | 'ICNAO02312']
+
+
+### Commenting on these specific results
+It is obvious that Flair's Named Entity Recognition did the following errors:
+1. classified 'XYZ 13423 / ILD' and 'LONDON, ENG' as company names where the first one is a serial number and the latter
+is a physical location
+2. didn't classify 'M&S LIMITED' as a company name.
+
+**But**, the clustering algorithms along with the selected parameters applied to each group respectively, didn't do any 
+mistake at all!    
+So, if we see the final result by merging everything into one file, we get the following result:
+
+   final clusters | in the same cluster
+  ------------- | -------------
+   1  | 'MARKS AND SPENCERS LTD', 'M&S CORPORATION LIMITED'
+   2  | 'NVIDIA IRELAND'
+   3  | 'INTEL LLC'
+   4  | 'XYZ 13423 / ILD'
+   5  | 'LONDON, ENG'
+   6  | 'LONDON', 'LONDON, GREAT BRITAIN', 'LONDON, ENGLAND'
+   7  | 'HONG KONG'
+   8  | 'ASIA'
+   9  | 'M&S LIMITED'
+   10  | 'SLOUGH SE12 2XY'
+   11  | '33 TIMBER YARD, LONDON, L1 8XY'
+   12  | '44 CHINA ROAD, KOWLOON, HONG KONG'
+   13  | 'ABC/ICL/20891NC'
+   14  | 'HARDWOOD TABLE'
+   15  | 'PLASTIC BOTTLE'
+   16  | 'TOYS'
+   17  | 'ICNAO02312']
+   
+As we can see, parts of NER classification errors remain in this representation as well. We would like 'LONDON, ENG'
+to be part of cluster 6; and, we would also like 'M&S LIMITED' to be part of cluster 1.    
+Thinking of next steps, after parsing the input one by one, having obtained the cluster as we have at this point,
+applying an algorithm like KNN could potentially classify the instances we described above, to the most similar neighbours.
+(hopefully the correct ones)
+
+In any case, these look like promising results and they suggest that word embeddings is probably a better way to 
+represent strings in a more _'usefull and meaningful'_ way for this specific task; when compared to string similarity
+ approaches. Of course, these results are tailored to the specific input strings - obtained by trying a bunch of
+  different algorithms/parameter combinations. Diferrent combinations may be needed for different/bigger datasets.
+ 
+
