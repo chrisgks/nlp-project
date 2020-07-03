@@ -88,9 +88,9 @@ and 'company adresses'
  
    cluster id | in the same cluster
   ------------- | -------------
-    0  | 'LONDON', 'LONDON, GREAT BRITAIN', 'LONDON, ENGLAND'
-    1  | 'HONG KONG'
-    2  | 'ASIA'
+   0  | 'LONDON', 'LONDON, GREAT BRITAIN', 'LONDON, ENGLAND'
+   1  | 'HONG KONG'
+   2  | 'ASIA'
 
 **Unknown Soup** (or 'everything else')
 
