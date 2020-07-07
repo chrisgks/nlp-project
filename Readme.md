@@ -1,5 +1,7 @@
 # Entity Normalization Engine
 ## Usage (tested on Ubuntu 18.04.4 LTS)
+_note: feel free to skim-through this Readme first to get an overview, and then come back to "Usage" section_    
+
 0.. make sure you have [miniconda](https://docs.conda.io/en/latest/miniconda.html), 
 [anaconda](https://docs.anaconda.com/anaconda/install/linux/) or any other python virtual environment installed.      
 
@@ -23,8 +25,8 @@ conda activate vectorai
 ```bash
 pip install -r requirements.txt     
 ```
-At this point we need to decide if we want to use word embeddings or pre-computed distance matrices (similar to graph
-nodes) to represent the strings
+At this point we need to decide if we want to use word embeddings or pre-computed distance matrices (similar to 
+node distances in graphs) to represent our inputs
 
   use vector representations  | use 'graph-like' representations
   ------------- | -------------
@@ -57,7 +59,7 @@ In this group, strings are classified by the Named Entity Recognition model as '
 In this group, strings are classified by the Named Entity Recognition model as 'physical locations'
 
 * Where (same as previous except):
-    * 5: **epsilon** parameter,
+    * 6.5: **epsilon** parameter,
     * 1: **min_samples** parameter,
     * locations: **entity_name** parameter
 
@@ -66,7 +68,7 @@ In this group, strings are classified by the Named Entity Recognition model as '
 In this group, strings are not 'company names' nor 'physical locations' - we have 'serial numbers', 'physical goods',
 and 'company adresses'
 * Where (same as previous except):
-    * 5: **2.5** parameter,
+    * 2.5: **epsilon** parameter,
     * 1: **min_samples** parameter,
     * locations: **entity_name** parameter
  
@@ -139,7 +141,7 @@ So, if we see the final result by merging everything into one file, we get the f
    
 As we can see, parts of NER classification errors remain in this representation as well. We would like 'LONDON, ENG'
 to be part of cluster 6; and, we would also like 'M&S LIMITED' to be part of cluster 1.    
-Thinking of next steps, after parsing the input one by one, having obtained the cluster as we have at this point,
+Thinking of next steps, after parsing the input one by one, having obtained the clusters as we have at this point,
 applying an algorithm like KNN could potentially classify the instances we described above, to the most similar neighbours.
 (hopefully the correct ones)
 
